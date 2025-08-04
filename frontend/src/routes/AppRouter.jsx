@@ -39,7 +39,6 @@ const router = createBrowserRouter([
         path: 'categories',
         element: <AdminCategories />
       },
-      // Placeholder routes for future admin pages
       {
         path: 'dishes',
         element: <div className="p-10 text-center">Admin Dishes Page - Coming Soon</div>
