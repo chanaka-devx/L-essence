@@ -1,39 +1,95 @@
 import React, { useEffect, useState } from "react";
 import {
-  FaUtensils,
-  FaDrumstickBite,
-  FaCheese,
-  FaIceCream,
-  FaGlassMartiniAlt,
-  FaLeaf,
-  FaArrowRight
+  FaArrowRight,
+  FaPlus,
+  FaEdit,
+  FaTrash
 } from "react-icons/fa";
-
-const categoryIcons = {
-  Starters: <FaUtensils className="text-[#F59E0B] text-lg" />,
-  "Main Courses": <FaDrumstickBite className="text-[#F59E0B] text-lg" />,
-  "Side Dishes": <FaCheese className="text-[#F59E0B] text-lg" />,
-  Desserts: <FaIceCream className="text-[#F59E0B] text-lg" />,
-  Beverages: <FaGlassMartiniAlt className="text-[#F59E0B] text-lg" />,
-  Salads: <FaLeaf className="text-[#F59E0B] text-lg" />
-};
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Simulate API call
-    setTimeout(() => {
-      setCategories([
-        "Starters",
-        "Main Courses",
-        "Side Dishes",
-        "Desserts",
-        "Beverages",
-        "Salads"
-      ]);
-    }, 500);
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:5176/api/categories");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          setCategories(result.data);
+        } else {
+          throw new Error(result.message || "Failed to fetch categories");
+        }
+
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, []);
+
+  // Handle delete category
+  const handleDeleteCategory = async (categoryId) => {
+    if (window.confirm('Are you sure you want to delete this category?')) {
+      try {
+        const response = await fetch(`http://localhost:5176/api/categories/${categoryId}`, {
+          method: 'DELETE',
+        });
+        
+        if (response.ok) {
+          setCategories(categories.filter(cat => cat.id !== categoryId));
+        } else {
+          throw new Error('Failed to delete category');
+        }
+      } catch (err) {
+        console.error('Error deleting category:', err);
+        alert('Failed to delete category');
+      }
+    }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B]"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <p>Error loading categories: {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
@@ -47,26 +103,72 @@ const AdminCategories = () => {
 
       {/* Category List */}
       <div className="space-y-4 max-w-5xl mx-auto">
-        {categories.map((cat, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between border border-[#F4C430] bg-white rounded px-4 py-3 shadow-sm hover:shadow-md transition cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              {categoryIcons[cat]}
-              <h3 className="text-[#333333] font-medium">{cat}</h3>
-            </div>
-            <div className="flex items-center gap-6">
-              <span className="text-sm text-[#333333]">12 Dishes</span>
-              <button
-                onClick={() => alert(`Navigate to ${cat}`)}
-                className="text-[#333333] hover:text-[#F59E0B] transition"
-              >
-                <FaArrowRight />
-              </button>
-            </div>
+        {categories.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-[#333333] text-lg">No categories found.</p>
+            <p className="text-[#666666] text-sm">Start by adding your first category.</p>
           </div>
-        ))}
+        ) : (
+          categories.map((cat) => (
+            <div
+              key={cat.id}
+              className="flex items-center justify-between border border-[#F4C430] bg-white rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex items-center gap-4">
+                {/* Category Image */}
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#F4C430] flex-shrink-0">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/assets/images/placeholder.jpg'; // Fallback image
+                    }}
+                  />
+                </div>
+                
+                {/* Category Info */}
+                <div>
+                  <h3 className="text-[#333333] font-medium text-lg">{cat.title}</h3>
+                  <p className="text-[#666666] text-sm">{cat.description}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-[#666666] bg-[#F4C430] px-2 py-1 rounded">
+                  12 Dishes
+                </span>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => alert(`Edit category: ${cat.title}`)}
+                    className="text-[#333333] hover:text-[#F59E0B] transition p-2 hover:bg-[#FDF6E3] rounded"
+                    title="Edit Category"
+                  >
+                    <FaEdit />
+                  </button>
+                  
+                  <button
+                    onClick={() => handleDeleteCategory(cat.id)}
+                    className="text-[#333333] hover:text-red-500 transition p-2 hover:bg-red-50 rounded"
+                    title="Delete Category"
+                  >
+                    <FaTrash />
+                  </button>
+                  
+                  <button
+                    onClick={() => alert(`Navigate to ${cat.title} dishes`)}
+                    className="text-[#333333] hover:text-[#F59E0B] transition p-2 hover:bg-[#FDF6E3] rounded"
+                    title="View Dishes"
+                  >
+                    <FaArrowRight />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

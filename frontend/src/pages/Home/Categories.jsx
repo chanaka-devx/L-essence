@@ -2,53 +2,71 @@ import React, { useEffect, useState } from 'react';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Simulated fetch from server
   useEffect(() => {
     const fetchCategories = async () => {
-      const data = [
-        {
-          id: 1,
-          title: 'Starters',
-          description: 'Light and flavorful dishes to begin your dining experience.',
-          image: '../assets/images/categories/starters.jpg',
-        },
-        {
-          id: 2,
-          title: 'Main Courses',
-          description: 'Light hearty and satisfying signature dishes that form the core of your meal.',
-          image: '/assets/images/categories/mains.jpg',
-        },
-        {
-          id: 3,
-          title: 'Side Dishes',
-          description: 'Complementary items that pair perfectly with your main course.',
-          image: '/assets/images/categories/sides.jpg',
-        },
-        {
-          id: 4,
-          title: 'Desserts',
-          description: 'Indulgent sweet treats to end your meal on a high note.',
-          image: '/assets/images/categories/desserts.jpg',
-        },
-        {
-          id: 5,
-          title: 'Beverages',
-          description: 'A curated selection of wines, cocktails, soft drinks, and specialty beverages.',
-          image: '/assets/images/categories/beverages.jpg',
-        },
-        {
-          id: 6,
-          title: 'Salads',
-          description: 'Fresh and crisp combinations of greens, vegetables, and dressings.',
-          image: '/assets/images/categories/salads.jpg',
-        },
-      ];
-      setCategories(data);
+      try{
+        setLoading(true);
+        const response = await fetch('http://localhost:5176/api/categories');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+
+        const result = await response.json();
+
+        if (result.success){
+          setCategories(result.data);
+        } else {
+          throw new Error(result.message || 'Failed to fetch categories');
+        }
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCategories();
   }, []);
+
+  // Loading state
+  if (loading) {
+    return (
+      <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-playfair font-semibold text-[#333333] mb-10">Categories</h2>
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F4C430]"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-playfair font-semibold text-[#333333] mb-10">Categories</h2>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <p>Error loading categories: {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
