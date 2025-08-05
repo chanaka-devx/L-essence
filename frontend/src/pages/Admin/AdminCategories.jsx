@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaArrowRight,
   FaPlus,
@@ -7,6 +8,7 @@ import {
 } from "react-icons/fa";
 
 const AdminCategories = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,9 +72,8 @@ const AdminCategories = () => {
 
   // Handle navigate to category dishes
   const handleNavigateToCategory = (categoryId, categoryTitle) => {
-    alert(`Navigate to ${categoryTitle} dishes (ID: ${categoryId})`);
-    // TODO: Navigate to category dishes page
-    // Example: navigate(`/admin/categories/${categoryId}/dishes`);
+    console.log(`Navigating to ${categoryTitle} dishes (ID: ${categoryId})`);
+    navigate(`/admin/categories/${categoryId}/dishes`);
   };
 
   // Loading state
@@ -173,7 +174,7 @@ const AdminCategories = () => {
                   </button>
                   
                   <button
-                    onClick={() => alert(`Navigate to ${cat.title} dishes`)}
+                    onClick={() => navigate(`/admin/categories/${cat.id}/dishes`)}
                     className="text-[#333333] hover:text-[#F59E0B] transition p-2 hover:bg-[#FDF6E3] rounded"
                     title="View Dishes"
                   >

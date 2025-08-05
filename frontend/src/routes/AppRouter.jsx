@@ -6,6 +6,8 @@ import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import AdminCategories from '../pages/Admin/AdminCategories';
 import AdminDashboard from '../pages/Admin/AdminDashboard';
+import AdminDishesById from '../pages/Admin/AdminDishesById';
+import AdminDishes from '../pages/Admin/AdminDishes';
 
 // You can add more routes as needed
 const router = createBrowserRouter([
@@ -40,8 +42,12 @@ const router = createBrowserRouter([
         element: <AdminCategories />
       },
       {
+        path: 'categories/:categoryId/dishes',
+        element: <AdminDishesById />
+      },
+      {
         path: 'dishes',
-        element: <div className="p-10 text-center">Admin Dishes Page - Coming Soon</div>
+        element: <AdminDishes />
       },
       {
         path: 'bookings',
