@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5176;
 
 // Import routes
 const categoriesRoutes = require('./routes/categoryRoutes');
+const dishesRoutes = require('./routes/dishRoutes');
 
 // Middleware
 app.use(cors());
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/dishes', dishesRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the L-essence backend!');

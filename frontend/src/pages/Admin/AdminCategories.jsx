@@ -61,6 +61,20 @@ const AdminCategories = () => {
     }
   };
 
+  // Handle edit category
+  const handleEditCategory = (categoryId, e) => {
+    e.stopPropagation(); // Prevent tile click when editing
+    alert(`Edit category ID: ${categoryId}`);
+    // TODO: Navigate to edit page or open modal
+  };
+
+  // Handle navigate to category dishes
+  const handleNavigateToCategory = (categoryId, categoryTitle) => {
+    alert(`Navigate to ${categoryTitle} dishes (ID: ${categoryId})`);
+    // TODO: Navigate to category dishes page
+    // Example: navigate(`/admin/categories/${categoryId}/dishes`);
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -76,7 +90,7 @@ const AdminCategories = () => {
   if (error) {
     return (
       <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p>Error loading categories: {error}</p>
             <button 
@@ -112,6 +126,7 @@ const AdminCategories = () => {
           categories.map((cat) => (
             <div
               key={cat.id}
+              onClick={() => handleNavigateToCategory(cat.id, cat.title)}
               className="flex items-center justify-between border border-[#F4C430] bg-white rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition"
             >
               <div className="flex items-center gap-4">
@@ -140,9 +155,9 @@ const AdminCategories = () => {
                 </span>
                 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   <button
-                    onClick={() => alert(`Edit category: ${cat.title}`)}
+                    onClick={(e) => handleEditCategory(cat.id, e)}
                     className="text-[#333333] hover:text-[#F59E0B] transition p-2 hover:bg-[#FDF6E3] rounded"
                     title="Edit Category"
                   >

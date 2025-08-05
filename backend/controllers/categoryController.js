@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const Dish = require('../models/dish');
 
 class CategoryController {
   // GET /api/categories - Get all categories
@@ -174,6 +175,50 @@ class CategoryController {
       res.status(500).json({
         success: false,
         message: 'Failed to delete category',
+        error: error.message
+      });
+    }
+  }
+
+  // GET /api/categories/:id/dishes - Get dishes by category ID
+  static async getDishesByCategory(req, res) {
+    try {
+      const { id } = req.params;
+
+      // Validate ID
+      if (!id || isNaN(parseInt(id))) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid category ID'
+        });
+      }
+
+      // Check if category exists
+      const category = await Category.findById(parseInt(id));
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          message: 'Category not found'
+        });
+      }
+
+      // Get dishes for this category
+      const dishes = await Dish.findByCategoryId(parseInt(id));
+
+      res.status(200).json({
+        success: true,
+        message: `Dishes for category '${category.title}' retrieved successfully`,
+        data: {
+          category: category,
+          dishes: dishes,
+          dishCount: dishes.length
+        }
+      });
+    } catch (error) {
+      console.error('Error in getDishesByCategory:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve dishes for category',
         error: error.message
       });
     }
