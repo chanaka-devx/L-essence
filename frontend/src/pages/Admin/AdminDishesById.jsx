@@ -94,7 +94,7 @@ const AdminDishesById = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-[#FDF6E3] p-8 font-['Playfair_Display']">
-        <div className="max-w-5xl mx-auto text-center">
+        <div className="mt-20 max-w-5xl mx-auto text-center">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p>Error loading dishes: {error}</p>
             <button

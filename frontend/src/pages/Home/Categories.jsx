@@ -37,7 +37,7 @@ const Categories = () => {
   // Loading state
   if (loading) {
     return (
-      <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
+      <section id="categories" className="bg-[#FFFFE0] py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-playfair font-semibold text-[#333333] mb-10">Categories</h2>
           <div className="flex justify-center items-center">
@@ -51,7 +51,7 @@ const Categories = () => {
   // Error state
   if (error) {
     return (
-      <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
+      <section id="categories" className="bg-[#FFFFE0] py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-playfair font-semibold text-[#333333] mb-10">Categories</h2>
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
@@ -69,7 +69,7 @@ const Categories = () => {
   }
 
   return (
-    <section id="categories" className="bg-[#FDF6E3] py-16 px-4">
+    <section id="categories" className="bg-[#FFFFE0] py-16 px-4">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="text-3xl font-playfair font-semibold text-[#333333] mb-10">Categories</h2>
 

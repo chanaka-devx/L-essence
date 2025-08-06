@@ -1,228 +1,121 @@
+// Get all categories
+const pool = require('../config/db');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 const Category = require('../models/Category');
-const Dish = require('../models/dish');
 
-class CategoryController {
-  // GET /api/categories - Get all categories
-  static async getAllCategories(req, res) {
-    try {
-      const categories = await Category.findAll();
-      res.status(200).json({
-        success: true,
-        message: 'Categories fetched successfully',
-        data: categories
-      });
-    } catch (error) {
-      console.error('Error in getAllCategories:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to fetch categories',
-        error: error.message
-      });
-    }
+exports.getAllCategories = async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT id, title, description, image FROM categories ORDER BY id ASC'
+    );
+
+    res.status(200).json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving categories',
+    });
   }
+};
 
-  // GET /api/categories/:id - Get category by ID
-  static async getCategoryById(req, res) {
-    try {
-      const { id } = req.params;
-      
-      // Validate ID
-      if (!id || isNaN(parseInt(id))) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category ID'
-        });
-      }
+// CLOUDINARY CONFIG
+cloudinary.config({
+  cloud_name: "dhbormcgi",
+  api_key: "747529268123495",
+  api_secret: "e-imcDaPM2qa7rDbYHeERv6o6R8",
+});
 
-      const category = await Category.findById(parseInt(id));
-      
-      if (!category) {
-        return res.status(404).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
+// ==========================
+// CREATE Category
+// ==========================
+exports.createCategory = async (req, res) => {
+  try {
+    const { title, description } = req.body;
 
-      res.status(200).json({
-        success: true,
-        message: 'Category retrieved successfully',
-        data: category
-      });
-    } catch (error) {
-      console.error('Error in getCategoryById:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to retrieve category',
-        error: error.message
-      });
-    }
+    if (!req.file) return res.status(400).json({ success: false, message: 'Image is required.' });
+
+    const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence' });
+    fs.unlinkSync(req.file.path); // remove temp file
+
+    const [insert] = await pool.execute(
+      'INSERT INTO categories (title, description, image) VALUES (?, ?, ?)',
+      [title, description, result.secure_url]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Category created',
+      data: { id: insert.insertId, title, description, image: result.secure_url },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
+};
 
-  // POST /api/categories - Create new category
-  static async createCategory(req, res) {
-    try {
-      const { title, description, image } = req.body;
+// ==========================
+// GET Category by ID
+// ==========================
+exports.getCategoryById = async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT * FROM categories WHERE id = ?', [req.params.id]);
 
-      // Validate required fields
-      if (!title || !description) {
-        return res.status(400).json({
-          success: false,
-          message: 'Title and description are required'
-        });
-      }
+    if (rows.length === 0)
+      return res.status(404).json({ success: false, message: 'Category not found' });
 
-      const category = new Category(null, title, description, image);
-      const savedCategory = await category.save();
-
-      res.status(201).json({
-        success: true,
-        message: 'Category created successfully',
-        data: savedCategory
-      });
-    } catch (error) {
-      console.error('Error in createCategory:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to create category',
-        error: error.message
-      });
-    }
+    res.status(200).json({ success: true, data: rows[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
+};
 
-  // PUT /api/categories/:id - Update category
-  static async updateCategory(req, res) {
-    try {
-      const { id } = req.params;
-      const { title, description, image } = req.body;
+// ==========================
+// UPDATE Category
+// ==========================
+exports.updateCategory = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const id = req.params.id;
 
-      // Validate ID
-      if (!id || isNaN(parseInt(id))) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category ID'
-        });
-      }
-
-      // Validate required fields
-      if (!title || !description) {
-        return res.status(400).json({
-          success: false,
-          message: 'Title and description are required'
-        });
-      }
-
-      // Check if category exists
-      const existingCategory = await Category.findById(parseInt(id));
-      if (!existingCategory) {
-        return res.status(404).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
-
-      // Update category
-      existingCategory.title = title;
-      existingCategory.description = description;
-      existingCategory.image = image;
-      
-      const updatedCategory = await existingCategory.update();
-
-      res.status(200).json({
-        success: true,
-        message: 'Category updated successfully',
-        data: updatedCategory
-      });
-    } catch (error) {
-      console.error('Error in updateCategory:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to update category',
-        error: error.message
-      });
+    let imageUrl = null;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence' });
+      fs.unlinkSync(req.file.path);
+      imageUrl = result.secure_url;
     }
+
+    const [update] = await pool.execute(
+      'UPDATE categories SET title = ?, description = ?, image = COALESCE(?, image) WHERE id = ?',
+      [title, description, imageUrl, id]
+    );
+
+    if (update.affectedRows === 0)
+      return res.status(404).json({ success: false, message: 'Category not found' });
+
+    res.status(200).json({ success: true, message: 'Category updated' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
+};
 
-  // DELETE /api/categories/:id - Delete category
-  static async deleteCategory(req, res) {
-    try {
-      const { id } = req.params;
+// ==========================
+// DELETE Category
+// ==========================
+exports.deleteCategory = async (req, res) => {
+  try {
+    const id = req.params.id;
 
-      // Validate ID
-      if (!id || isNaN(parseInt(id))) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category ID'
-        });
-      }
+    const [del] = await pool.execute('DELETE FROM categories WHERE id = ?', [id]);
 
-      // Check if category exists
-      const existingCategory = await Category.findById(parseInt(id));
-      if (!existingCategory) {
-        return res.status(404).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
+    if (del.affectedRows === 0)
+      return res.status(404).json({ success: false, message: 'Category not found' });
 
-      await Category.delete(parseInt(id));
-
-      res.status(200).json({
-        success: true,
-        message: 'Category deleted successfully'
-      });
-    } catch (error) {
-      console.error('Error in deleteCategory:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to delete category',
-        error: error.message
-      });
-    }
+    res.status(200).json({ success: true, message: 'Category deleted' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  // GET /api/categories/:id/dishes - Get dishes by category ID
-  static async getDishesByCategory(req, res) {
-    try {
-      const { id } = req.params;
-
-      // Validate ID
-      if (!id || isNaN(parseInt(id))) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category ID'
-        });
-      }
-
-      // Check if category exists
-      const category = await Category.findById(parseInt(id));
-      if (!category) {
-        return res.status(404).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
-
-      // Get dishes for this category
-      const dishes = await Dish.findByCategoryId(parseInt(id));
-
-      res.status(200).json({
-        success: true,
-        message: `Dishes for category '${category.title}' retrieved successfully`,
-        data: {
-          category: category,
-          dishes: dishes,
-          dishCount: dishes.length
-        }
-      });
-    } catch (error) {
-      console.error('Error in getDishesByCategory:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to retrieve dishes for category',
-        error: error.message
-      });
-    }
-  }
-}
-
-module.exports = CategoryController;
+};

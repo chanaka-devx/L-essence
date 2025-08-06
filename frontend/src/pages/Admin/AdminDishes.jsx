@@ -36,7 +36,7 @@ const AdminDishes = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="bg-[#FDF6E3] min-h-screen py-12 px-6 font-['Playfair_Display']">
+      <div className="bg-[#FFFFE0] min-h-screen mt-10py-12 px-6 font-['Playfair_Display']">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B]"></div>
         </div>
@@ -47,7 +47,7 @@ const AdminDishes = () => {
   // Error state
   if (error) {
     return (
-      <div className="bg-[#FDF6E3] min-h-screen py-12 px-6 font-['Playfair_Display']">
+      <div className="bg-[#FFFFE0] min-h-screen mt-10 py-12 px-6 font-['Playfair_Display']">
         <div className="max-w-5xl mx-auto text-center">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p>Error loading dishes: {error}</p>
@@ -64,8 +64,8 @@ const AdminDishes = () => {
   }
 
   return (
-    <div className="bg-[#FDF6E3] min-h-screen mt-10 py-12 px-6 font-['Playfair_Display']">
-      <h2 className="text-center text-3xl font-semibold text-[#333333] mb-10">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 py-12 px-6 font-['Playfair_Display']">
+      <h2 className="text-center text-2xl font-semibold text-[#333333] mb-10">
         All Dishes ({dishes.length} dishes)
       </h2>
 

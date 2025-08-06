@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddCategoryModal from "../../models/AddCategoryModel";
+import UpdateCategoryModal from "../../models/UpdateCategoryModel";
 import {
   FaArrowRight,
   FaPlus,
@@ -12,6 +14,7 @@ const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Simulate API call
@@ -70,16 +73,10 @@ const AdminCategories = () => {
     // TODO: Navigate to edit page or open modal
   };
 
-  // Handle navigate to category dishes
-  const handleNavigateToCategory = (categoryId, categoryTitle) => {
-    console.log(`Navigating to ${categoryTitle} dishes (ID: ${categoryId})`);
-    navigate(`/admin/categories/${categoryId}/dishes`);
-  };
-
   // Loading state
   if (loading) {
     return (
-      <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+      <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B]"></div>
         </div>
@@ -90,7 +87,7 @@ const AdminCategories = () => {
   // Error state
   if (error) {
     return (
-      <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+      <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
         <div className="max-w-5xl mx-auto text-center">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p>Error loading categories: {error}</p>
@@ -107,13 +104,17 @@ const AdminCategories = () => {
   }
 
   return (
-    <div className="bg-[#FDF6E3] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-[#333333]">Food Categories</h2>
-        <button className="bg-[#F59E0B] text-white px-4 py-2 rounded hover:bg-[#e18f06] transition">
+      <div className="pr-4 flex justify-between items-center mb-6">
+        <h2 className="pl-4 text-2xl font-semibold text-[#333333]">Food Categories</h2>
+        <button 
+          className="bg-[#F59E0B] text-white px-4 py-2 rounded hover:bg-[#e18f06] transition"
+          onClick={() => setIsModalOpen(true)}
+        >
           Add Category
         </button>
+        <AddCategoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
 
       {/* Category List */}
@@ -127,7 +128,6 @@ const AdminCategories = () => {
           categories.map((cat) => (
             <div
               key={cat.id}
-              onClick={() => handleNavigateToCategory(cat.id, cat.title)}
               className="flex items-center justify-between border border-[#F4C430] bg-white rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition"
             >
               <div className="flex items-center gap-4">
