@@ -8,7 +8,7 @@ const CategoryController = require('../controllers/categoryController');
 router.get('/', CategoryController.getAllCategories);
 
 // GET /api/categories/:id/dishes - Get dishes by category ID
-//router.get('/:id/dishes', CategoryController.getDishesByCategory);
+router.get('/:id/dishes', CategoryController.getDishesByCategory);
 
 // GET /api/categories/:id - Get category by ID
 router.get('/:id', CategoryController.getCategoryById);

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 const Dishes = () => {
-  const [title, setTitle] = useState("Loading...");
+  const [name, setName] = useState("Loading...");
   const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
     
     setTimeout(() => {
-      setTitle("Starters");
+      setName("Starters");
       setDishes([
         {
           id: 1,
@@ -58,7 +58,7 @@ const Dishes = () => {
   return (
     <div className="bg-[#FDF6E3] min-h-screen py-12 px-6 font-['Playfair_Display']">
       <h2 className="text-center text-3xl font-semibold text-[#333333] mb-10">
-        {title}
+        {name}
       </h2>
 
       <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">

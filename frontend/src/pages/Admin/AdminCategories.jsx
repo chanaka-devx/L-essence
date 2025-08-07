@@ -2,12 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddCategoryModal from "../../models/AddCategoryModel";
 import UpdateCategoryModal from "../../models/UpdateCategoryModel";
-import {
-  FaArrowRight,
-  FaPlus,
-  FaEdit,
-  FaTrash
-} from "react-icons/fa";
+import {FaArrowRight} from "react-icons/fa";
+import { FiEdit, FiTrash } from "react-icons/fi";
 
 const AdminCategories = () => {
   const navigate = useNavigate();
@@ -15,6 +11,8 @@ const AdminCategories = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
     // Simulate API call
@@ -69,8 +67,23 @@ const AdminCategories = () => {
   // Handle edit category
   const handleEditCategory = (categoryId, e) => {
     e.stopPropagation(); // Prevent tile click when editing
-    alert(`Edit category ID: ${categoryId}`);
-    // TODO: Navigate to edit page or open modal
+    const category = categories.find(cat => cat.id === categoryId);
+    if (category) {
+      setSelectedCategory(category);
+      setIsUpdateModalOpen(true);
+    }
+  };
+
+  // Handle category addition
+  const handleCategoryAdded = (newCategory) => {
+    setCategories(prev => [...prev, newCategory]);
+  };
+
+  // Handle category update
+  const handleCategoryUpdated = (updatedCategory) => {
+    setCategories(prevCategories => 
+      prevCategories.map(cat => 
+        cat && cat.id === updatedCategory.id ? updatedCategory : cat));
   };
 
   // Loading state
@@ -135,7 +148,7 @@ const AdminCategories = () => {
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#F4C430] flex-shrink-0">
                   <img 
                     src={cat.image} 
-                    alt={cat.title}
+                    alt={cat.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src = '/assets/images/placeholder.jpg'; // Fallback image
@@ -145,7 +158,7 @@ const AdminCategories = () => {
                 
                 {/* Category Info */}
                 <div>
-                  <h3 className="text-[#333333] font-medium text-lg">{cat.title}</h3>
+                  <h3 className="text-[#333333] font-medium text-lg">{cat.name}</h3>
                   <p className="text-[#666666] text-sm">{cat.description}</p>
                 </div>
               </div>
@@ -162,7 +175,7 @@ const AdminCategories = () => {
                     className="text-[#333333] hover:text-[#F59E0B] transition p-2 hover:bg-[#FDF6E3] rounded"
                     title="Edit Category"
                   >
-                    <FaEdit />
+                    <FiEdit />
                   </button>
                   
                   <button
@@ -170,7 +183,7 @@ const AdminCategories = () => {
                     className="text-[#333333] hover:text-red-500 transition p-2 hover:bg-red-50 rounded"
                     title="Delete Category"
                   >
-                    <FaTrash />
+                    <FiTrash />
                   </button>
                   
                   <button
@@ -186,6 +199,22 @@ const AdminCategories = () => {
           ))
         )}
       </div>
+      {/* Modals */}
+      <AddCategoryModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        onCategoryAdded={handleCategoryAdded}
+      />
+      
+      <UpdateCategoryModal 
+        isOpen={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setSelectedCategory(null);
+        }}
+        category={selectedCategory}
+        onCategoryUpdated={handleCategoryUpdated}
+      />
     </div>
   );
 };

@@ -7,7 +7,7 @@ const Category = require('../models/Category');
 exports.getAllCategories = async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      'SELECT id, title, description, image FROM categories ORDER BY id ASC'
+      'SELECT id, name, description, image FROM categories ORDER BY id ASC'
     );
 
     res.status(200).json({
@@ -30,12 +30,43 @@ cloudinary.config({
   api_secret: "e-imcDaPM2qa7rDbYHeERv6o6R8",
 });
 
-// ==========================
+// GET all dishes of a specific category
+exports.getDishesByCategory = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const [[category]] = await pool.execute(
+      'SELECT * FROM categories WHERE id = ?',
+      [categoryId]
+    );
+
+    if (!category) {
+      return res.status(404).json({ success: false, message: 'Category not found' });
+    }
+
+    const [dishes] = await pool.execute(
+      'SELECT * FROM dishes WHERE category_id = ?',
+      [categoryId]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        category,
+        dishes
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
 // CREATE Category
-// ==========================
 exports.createCategory = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { name, description } = req.body;
 
     if (!req.file) return res.status(400).json({ success: false, message: 'Image is required.' });
 
@@ -43,23 +74,21 @@ exports.createCategory = async (req, res) => {
     fs.unlinkSync(req.file.path); // remove temp file
 
     const [insert] = await pool.execute(
-      'INSERT INTO categories (title, description, image) VALUES (?, ?, ?)',
-      [title, description, result.secure_url]
+      'INSERT INTO categories (name, description, image) VALUES (?, ?, ?)',
+      [name, description, result.secure_url]
     );
 
     res.status(201).json({
       success: true,
       message: 'Category created',
-      data: { id: insert.insertId, title, description, image: result.secure_url },
+      data: { id: insert.insertId, name, description, image: result.secure_url },
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// ==========================
 // GET Category by ID
-// ==========================
 exports.getCategoryById = async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM categories WHERE id = ?', [req.params.id]);
@@ -73,12 +102,10 @@ exports.getCategoryById = async (req, res) => {
   }
 };
 
-// ==========================
 // UPDATE Category
-// ==========================
 exports.updateCategory = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { name, description } = req.body;
     const id = req.params.id;
 
     let imageUrl = null;
@@ -89,8 +116,8 @@ exports.updateCategory = async (req, res) => {
     }
 
     const [update] = await pool.execute(
-      'UPDATE categories SET title = ?, description = ?, image = COALESCE(?, image) WHERE id = ?',
-      [title, description, imageUrl, id]
+      'UPDATE categories SET name = ?, description = ?, image = COALESCE(?, image) WHERE id = ?',
+      [name, description, imageUrl, id]
     );
 
     if (update.affectedRows === 0)
@@ -102,9 +129,7 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// ==========================
 // DELETE Category
-// ==========================
 exports.deleteCategory = async (req, res) => {
   try {
     const id = req.params.id;

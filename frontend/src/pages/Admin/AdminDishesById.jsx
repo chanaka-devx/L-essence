@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaPlus,} from "react-icons/fa";
+import { FiEdit, FiTrash } from "react-icons/fi";
 
 const AdminDishesById = () => {
   const { categoryId } = useParams();
@@ -74,7 +75,7 @@ const AdminDishesById = () => {
 
   // Handle add new dish
   const handleAddDish = () => {
-    alert(`Add new dish to category: ${category?.title}`);
+    alert(`Add new dish to category: ${category?.name}`);
     // TODO: Navigate to add dish page or open modal
     // navigate(`/admin/categories/${categoryId}/dishes/new`);
   };
@@ -128,7 +129,7 @@ const AdminDishesById = () => {
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#F4C430]">
                   <img
                     src={category.image}
-                    alt={category.title}
+                    alt={category.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src = "/assets/images/placeholder.jpg";
@@ -137,7 +138,7 @@ const AdminDishesById = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-semibold text-[#333333]">
-                    {category.title}
+                    {category.name}
                   </h1>
                   <span className="text-sm text-[#666666] bg-[#F4C430] px-2 py-1 rounded">
                     {dishes.length} Dishes
@@ -173,9 +174,24 @@ const AdminDishesById = () => {
                 {dishes.map((dish) => (
                   <div
                     key={dish.id}
-                    className="bg-white border border-[#F4C430] rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                    className="relative bg-white border border-[#F4C430] rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
                   >
                     {/* Dish Image */}
+                    <div className="flex items-center space-x-1 absolute top-2 right-2">
+                                    <button
+                                      onClick={() => handleEditDish(dish.id)}
+                                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
+                                    >
+                                      <FiEdit className="text-black" size={20} />
+                                    </button>
+                    
+                                    <button
+                                      onClick={() => handleDeleteDish(dish.id)}
+                                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
+                                    >
+                                      <FiTrash className="text-black" size={20} />
+                                    </button>
+                                  </div>
                     <img
                       src={dish.dish_image}
                       alt={dish.name}
@@ -187,29 +203,10 @@ const AdminDishesById = () => {
 
                     {/* Dish Info */}
                     <div className="p-4">
-                      <h3 className="text-[#333333] text-lg font-medium">
+                      <h3 className="text-[#333333] text-lg font-medium font-semibold">
                         {dish.name}
                       </h3>
                       <p className="text-[#333333] mt-1">LKR {dish.price}</p>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-between gap-2 p-4">
-                      <button
-                        onClick={() => handleEditDish(dish.id)}
-                        className="w-16 text-[#333333] bg-[#F4C430] transition p-2 hover:bg-[#F59E0B] rounded font-medium"
-                        title="Edit Dish"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => handleDeleteDish(dish.id)}
-                        className="w-16 text-[#333333] bg-red-500 hover:bg-red-600 transition p-2 rounded font-medium"
-                        title="Delete Dish"
-                      >
-                        Delete
-                      </button>
                     </div>
                   </div>
                 ))}

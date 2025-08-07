@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const DishController = require('../controllers/dishController');
 
 // GET /api/dishes - Get all dishes
@@ -9,10 +11,10 @@ router.get('/', DishController.getAllDishes);
 router.get('/:id', DishController.getDishById);
 
 // POST /api/dishes - Create new dish
-router.post('/', DishController.createDish);
+router.post('/', upload.single('image'), DishController.createDish);
 
 // PUT /api/dishes/:id - Update dish
-router.put('/:id', DishController.updateDish);
+router.put('/:id', upload.single('dish_image'), DishController.updateDish);
 
 // DELETE /api/dishes/:id - Delete dish
 router.delete('/:id', DishController.deleteDish);

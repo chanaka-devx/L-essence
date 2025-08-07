@@ -1,34 +1,65 @@
 import React, { useState, useEffect } from "react";
 
-const UpdateCategoryModal = ({
+const UpdateDishModal = ({
   isOpen,
   onClose,
-  category,
-  onCategoryUpdated,
+  dish,
+  onDishUpdated,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    price: '',
+    categoryId: '',
     image: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState("");
+  const [categories, setCategories] = useState([]);
 
-  // Populate form when category changes
+  // Fetch categories for the dropdown
   useEffect(() => {
-    if (isOpen && category) {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5176/api/categories");
+        if (response.ok) {
+          const result = await response.json();
+          setCategories(result.data || result);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen]);
+
+  // Populate form when dish changes
+  useEffect(() => {
+    console.log("Dish received in modal:", dish);
+    if (isOpen && dish) {
+
+      console.log("Dish details:", {
+      id: dish.id,
+      name: dish.name,
+      price: dish.price,
+      category_id: dish.category_id,
+      dish_image: dish.dish_image
+    });
+
       setFormData({
-        name: category.name || "",
-        description: category.description || "",
+        name: dish.name || "",
+        price: dish.price || "",
+        categoryId: dish.category_id || "",
         image: null,
       });
-      setPreviewImage(category.image || "");
+      setPreviewImage(dish.dish_image || "");
     }
-  }, [category, isOpen]);
+  }, [dish, isOpen]);
 
- 
-  if (!isOpen || !category) return null;
+  if (!isOpen || !dish) return null;
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -59,13 +90,14 @@ const UpdateCategoryModal = ({
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("category_id", formData.categoryId);
       if (formData.image) {
-        formDataToSend.append("image", formData.image);
+        formDataToSend.append("dish_image", formData.image);
       }
 
       const response = await fetch(
-        `http://localhost:5176/api/categories/${category.id}`,
+        `http://localhost:5176/api/dishes/${dish.id}`,
         {
           method: "PUT",
           body: formDataToSend,
@@ -73,16 +105,16 @@ const UpdateCategoryModal = ({
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update category");
+        throw new Error("Failed to update dish");
       }
 
       const result = await response.json();
       console.log("API Response:", result);
 
       // Call callback if provided
-      if (onCategoryUpdated) {
-        const updatedCategory = result.data || result;
-        onCategoryUpdated(updatedCategory);
+      if (onDishUpdated) {
+        const updatedDish = result.data || result;
+        onDishUpdated(updatedDish);
       }
 
       // Close modal
@@ -95,7 +127,12 @@ const UpdateCategoryModal = ({
   };
 
   const handleClose = () => {
-    setFormData({ name: "", description: "", image: null });
+    setFormData({ 
+      name: "", 
+      price: "", 
+      categoryId: "", 
+      image: null 
+    });
     setPreviewImage("");
     setError("");
     onClose();
@@ -105,7 +142,7 @@ const UpdateCategoryModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
       <div className="bg-[#FFFFE0] border-2 border-[#F4C430] rounded-xl p-6 w-[90%] max-w-md shadow-lg">
         <h2 className="text-center text-xl font-semibold mb-4">
-          {category ? `Update ${category.name}` : 'Update Category'}
+          {dish && dish.name ? `Update ${dish.name}` : 'Update Dish'}
         </h2>
 
         {error && (
@@ -120,35 +157,60 @@ const UpdateCategoryModal = ({
             <div className="text-center mb-4">
               <img
                 src={previewImage}
-                alt="Category preview"
+                alt="Dish preview"
                 className="w-20 h-20 object-cover rounded-full mx-auto border-2 border-[#F4C430]"
               />
             </div>
           )}
+          
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Category Name
+              Dish Name
             </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
+              required
               className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Description
+              Price
             </label>
-            <textarea
-              rows="3"
-              name="description"
-              value={formData.description}
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
               onChange={handleInputChange}
+              required
+              min="0"
+              step="0.01"
               className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleInputChange}
+              required
+              className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -179,7 +241,6 @@ const UpdateCategoryModal = ({
             <button
               type="submit"
               disabled={isLoading}
-              onClick={handleSubmit}
               className="px-4 py-2 bg-[#F59E0B] text-white font-semibold rounded hover:opacity-90 transition"
             >
               {isLoading ? "Updating..." : "Update"}
@@ -191,4 +252,4 @@ const UpdateCategoryModal = ({
   );
 };
 
-export default UpdateCategoryModal;
+export default UpdateDishModal;

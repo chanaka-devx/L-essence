@@ -26,7 +26,7 @@ const AddCategoryModal = ({ isOpen, onClose, onCategoryAdded }) => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('title', formData.name);
+      formDataToSend.append('name', formData.name);
       formDataToSend.append('description', formData.description);
       if (formData.image) {
         formDataToSend.append('image', formData.image);
