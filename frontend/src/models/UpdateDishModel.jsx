@@ -9,6 +9,7 @@ const UpdateDishModal = ({
   const [formData, setFormData] = useState({
     name: '',
     price: '',
+    cuisine_type: '',
     categoryId: '',
     image: null,
   });
@@ -43,6 +44,7 @@ const UpdateDishModal = ({
       setFormData({
         name: dish.name || "",
         price: dish.price || "",
+        cuisine_type: dish.cuisine_type || "",
         categoryId: dish.category_id || "",
         image: null,
       });
@@ -83,6 +85,7 @@ if (!isOpen || !dish || typeof dish !== 'object') return null;
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("price", formData.price);
+      formDataToSend.append("cuisine_type", formData.cuisine_type);
       formDataToSend.append("category_id", formData.categoryId);
       if (formData.image) {
         formDataToSend.append("dish_image", formData.image);
@@ -122,6 +125,7 @@ if (!isOpen || !dish || typeof dish !== 'object') return null;
     setFormData({ 
       name: "", 
       price: "", 
+      cuisine_type: "",
       categoryId: "", 
       image: null 
     });
@@ -181,6 +185,20 @@ if (!isOpen || !dish || typeof dish !== 'object') return null;
               required
               min="0"
               step="0.01"
+              className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Cuisine Type
+            </label>
+            <input
+              type="text"
+              name="cuisine_type"
+              value={formData.cuisine_type}
+              onChange={handleInputChange}
+              required
               className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
             />
           </div>

@@ -118,7 +118,7 @@ const AdminDishes = () => {
   }
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 font-['Playfair_Display']">
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">
           All Dishes ({dishes.length} dishes)
@@ -172,6 +172,7 @@ const AdminDishes = () => {
                 <h3 className="text-[#333333] text-lg font-medium">
                   {dish.name}
                 </h3>
+                <p className="text-sm text-[#F59E0B] mt-1">{dish.cuisine_type}</p>
                 <p className="text-[#333333] mt-1">LKR {dish.price}</p>
               </div>
             </div>

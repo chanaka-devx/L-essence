@@ -5,6 +5,7 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
     name: '',
     description: '',
     price: '',
+    cuisine_type: '',
     image: null,
     category_id: ''
   });
@@ -46,6 +47,7 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('price', formData.price);
+      formDataToSend.append('cuisine_type', formData.cuisine_type);
       formDataToSend.append('category_id', formData.category_id);
       if (formData.image) {
         formDataToSend.append('image', formData.image);
@@ -62,6 +64,7 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
       setFormData({
         name: '',
         price: '',
+        cuisine_type: '',
         image: null,
         category_id: ''
       });
@@ -106,6 +109,18 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
               step="0.01"
               name="price"
               value={formData.price}
+              onChange={handleInputChange}
+              className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Cuisine Type</label>
+            <input
+              type="text"
+              name="cuisine_type"
+              value={formData.cuisine_type}
               onChange={handleInputChange}
               className="w-full p-2 rounded border border-[#F4C430] bg-white focus:outline-none"
               required

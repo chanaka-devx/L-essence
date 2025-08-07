@@ -101,7 +101,7 @@ const Dishes = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {dishes.map((dish) => (
                   <div
                     key={dish.id}
@@ -119,9 +119,10 @@ const Dishes = () => {
 
                     {/* Dish Info */}
                     <div className="p-4">
-                      <h3 className="text-[#333333] text-lg font-medium font-semibold">
+                      <h3 className="text-[#333333] text-xl font-medium font-semibold">
                         {dish.name}
                       </h3>
+                      <p className="text-sm text-[#F59E0B] mt-1">{dish.cuisine_type}</p>
                       <p className="text-[#333333] mt-1">LKR {dish.price}</p>
                     </div>
                   </div>

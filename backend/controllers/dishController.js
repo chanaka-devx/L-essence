@@ -38,7 +38,7 @@ exports.getDishById = async (req, res) => {
 // CREATE new dish
 exports.createDish = async (req, res) => {
   try {
-    const { name, price, category_id } = req.body;
+    const { name, price, cuisine_type, category_id } = req.body;
 
     if (!req.file) return res.status(400).json({ success: false, message: 'Image is required.' });
 
@@ -46,14 +46,14 @@ exports.createDish = async (req, res) => {
     fs.unlinkSync(req.file.path);
 
     const [insert] = await pool.execute(
-      'INSERT INTO dishes (name, price, dish_image, category_id) VALUES (?, ?, ?, ?)',
-      [name, price, result.secure_url, category_id]
+      'INSERT INTO dishes (name, price, cuisine_type, dish_image, category_id) VALUES (?, ?, ?, ?, ?)',
+      [name, price, cuisine_type, result.secure_url, category_id]
     );
 
     res.status(201).json({
       success: true,
       message: 'Dish created',
-      data: { id: insert.insertId, name, price, dish_image: result.secure_url, category_id },
+      data: { id: insert.insertId, name, price, cuisine_type, dish_image: result.secure_url, category_id },
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -63,7 +63,7 @@ exports.createDish = async (req, res) => {
 // UPDATE dish
 exports.updateDish = async (req, res) => {
   try {
-    const { name, price, category_id } = req.body;
+    const { name, price, cuisine_type, category_id } = req.body;
     const id = req.params.id;
 
     let imageUrl = null;
@@ -74,8 +74,8 @@ exports.updateDish = async (req, res) => {
     }
 
     const [update] = await pool.execute(
-      'UPDATE dishes SET name = ?, price = ?, category_id = ?, dish_image = COALESCE(?, dish_image) WHERE id = ?',
-      [name, price, category_id, imageUrl, id]
+      'UPDATE dishes SET name = ?, price = ?, cuisine_type = ?, category_id = ?, dish_image = COALESCE(?, dish_image) WHERE id = ?',
+      [name, price, cuisine_type, category_id, imageUrl, id]
     );
 
     if (update.affectedRows === 0)

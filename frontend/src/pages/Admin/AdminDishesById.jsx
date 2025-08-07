@@ -220,6 +220,7 @@ const AdminDishesById = () => {
                       <h3 className="text-[#333333] text-lg font-medium font-semibold">
                         {dish.name}
                       </h3>
+                      <p className="text-sm text-[#F59E0B] mt-1">{dish.cuisine_type}</p>
                       <p className="text-[#333333] mt-1">LKR {dish.price}</p>
                     </div>
                   </div>
