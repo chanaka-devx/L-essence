@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryId) => {
+    window.scrollTo(0, 0);
+    navigate(`/categories/${categoryId}/dishes`);
+  };
 
   // Simulated fetch from server
   useEffect(() => {
@@ -77,11 +84,12 @@ const Categories = () => {
           {categories.map((cat) => (
             <div
               key={cat.id}
+              onClick={() => handleCategoryClick(cat.id)}
               className="bg-white border border-[#F4C430] rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
             >
-              <img src={cat.image} alt={cat.title} className="w-full h-48 object-cover" />
+              <img src={cat.image} alt={cat.name} className="w-full h-48 object-cover" />
               <div className="p-4 text-left">
-                <h3 className="text-xl font-semibold font-playfair text-[#333333] mb-2">{cat.title}</h3>
+                <h3 className="text-xl font-semibold font-playfair text-[#333333] mb-2">{cat.name}</h3>
                 <p className="text-[#333333] text-sm">{cat.description}</p>
               </div>
             </div>
