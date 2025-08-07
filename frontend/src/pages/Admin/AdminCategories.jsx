@@ -8,6 +8,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 const AdminCategories = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  const [categoryDishCounts, setCategoryDishCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +30,7 @@ const AdminCategories = () => {
 
         if (result.success) {
           setCategories(result.data);
+          fetchCategoryDishCounts(result.data);
         } else {
           throw new Error(result.message || "Failed to fetch categories");
         }
@@ -43,6 +45,28 @@ const AdminCategories = () => {
 
     fetchCategories();
   }, []);
+  
+  // Fetch dish counts for each category
+  const fetchCategoryDishCounts = async (categoryList) => {
+    try {
+      const countsData = {};
+      
+      for (const category of categoryList) {
+        const response = await fetch(`http://localhost:5176/api/categories/${category.id}/dishes/count`);
+        
+        if (response.ok) {
+          const result = await response.json();
+          countsData[category.id] = result.count || 0;
+        } else {
+          countsData[category.id] = 0;
+        }
+      }
+      
+      setCategoryDishCounts(countsData);
+    } catch (err) {
+      console.error("Error fetching dish counts:", err);
+    }
+  };
 
   // Handle delete category
   const handleDeleteCategory = async (categoryId) => {
@@ -53,7 +77,17 @@ const AdminCategories = () => {
         });
         
         if (response.ok) {
-          setCategories(categories.filter(cat => cat.id !== categoryId));
+          setCategories(prevCats => {
+            const updatedCategories = prevCats.filter(cat => cat.id !== categoryId);
+            return updatedCategories;
+          });
+          
+          // Update dish counts
+          setCategoryDishCounts(prev => {
+            const newCounts = {...prev};
+            delete newCounts[categoryId];
+            return newCounts;
+          });
         } else {
           throw new Error('Failed to delete category');
         }
@@ -77,6 +111,12 @@ const AdminCategories = () => {
   // Handle category addition
   const handleCategoryAdded = (newCategory) => {
     setCategories(prev => [...prev, newCategory]);
+    
+    // Initialize dish count for new category
+    setCategoryDishCounts(prev => ({
+      ...prev,
+      [newCategory.id]: 0
+    }));
   };
 
   // Handle category update
@@ -84,6 +124,9 @@ const AdminCategories = () => {
     setCategories(prevCategories => 
       prevCategories.map(cat => 
         cat && cat.id === updatedCategory.id ? updatedCategory : cat));
+    
+    // Optionally refresh dish counts if needed
+    fetchCategoryDishCounts(categories);
   };
 
   // Loading state
@@ -165,7 +208,7 @@ const AdminCategories = () => {
               
               <div className="flex items-center gap-4">
                 <span className="text-sm text-[#666666] bg-[#F4C430] px-2 py-1 rounded">
-                  12 Dishes
+                  {categoryDishCounts[cat.id] !== undefined ? categoryDishCounts[cat.id] : '...'} Dishes
                 </span>
                 
                 {/* Action Buttons */}

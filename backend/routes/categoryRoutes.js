@@ -10,6 +10,9 @@ router.get('/', CategoryController.getAllCategories);
 // GET /api/categories/:id/dishes - Get dishes by category ID
 router.get('/:id/dishes', CategoryController.getDishesByCategory);
 
+// GET /api/categories/:id/dishes/count - Get count of dishes by category ID
+router.get('/:id/dishes/count', CategoryController.getDishCountByCategory);
+
 // GET /api/categories/:id - Get category by ID
 router.get('/:id', CategoryController.getCategoryById);
 

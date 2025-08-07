@@ -61,6 +61,33 @@ exports.getDishesByCategory = async (req, res) => {
   }
 };
 
+// GET count of dishes in a specific category
+exports.getDishCountByCategory = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const [[category]] = await pool.execute(
+      'SELECT * FROM categories WHERE id = ?',
+      [categoryId]
+    );
+
+    if (!category) {
+      return res.status(404).json({ success: false, message: 'Category not found' });
+    }
+
+    const [[result]] = await pool.execute(
+      'SELECT COUNT(*) as count FROM dishes WHERE category_id = ?',
+      [categoryId]
+    );
+
+    res.status(200).json({
+      success: true,
+      count: result.count || 0
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 
 // CREATE Category
