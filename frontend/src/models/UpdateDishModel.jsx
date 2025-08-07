@@ -38,16 +38,7 @@ const UpdateDishModal = ({
 
   // Populate form when dish changes
   useEffect(() => {
-    console.log("Dish received in modal:", dish);
-    if (isOpen && dish) {
-
-      console.log("Dish details:", {
-      id: dish.id,
-      name: dish.name,
-      price: dish.price,
-      category_id: dish.category_id,
-      dish_image: dish.dish_image
-    });
+    if (isOpen && dish?.id && dish?.name) {
 
       setFormData({
         name: dish.name || "",
@@ -59,7 +50,8 @@ const UpdateDishModal = ({
     }
   }, [dish, isOpen]);
 
-  if (!isOpen || !dish) return null;
+if (!isOpen || !dish || typeof dish !== 'object') return null;
+
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;

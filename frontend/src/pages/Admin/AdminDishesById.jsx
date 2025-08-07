@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaPlus,} from "react-icons/fa";
+import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import AddDishModal from "../../models/AddDishModel";
+import UpdateDishModal from "../../models/UpdateDishModel";
 
 const AdminDishesById = () => {
   const { categoryId } = useParams();
@@ -10,6 +12,9 @@ const AdminDishesById = () => {
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedDish, setSelectedDish] = useState(null);
 
   useEffect(() => {
     const fetchDishesByCategory = async () => {
@@ -68,16 +73,25 @@ const AdminDishesById = () => {
 
   // Handle edit dish
   const handleEditDish = (dishId) => {
-    alert(`Edit dish ID: ${dishId}`);
-    // TODO: Navigate to edit dish page or open modal
-    // navigate(`/admin/dishes/${dishId}/edit`);
+    const dishToEdit = dishes.find((d) => d.id === dishId);
+    if (dishToEdit) {
+      setSelectedDish(dishToEdit);
+      setIsUpdateModalOpen(true);
+    }
   };
 
-  // Handle add new dish
-  const handleAddDish = () => {
-    alert(`Add new dish to category: ${category?.name}`);
-    // TODO: Navigate to add dish page or open modal
-    // navigate(`/admin/categories/${categoryId}/dishes/new`);
+  // Handle dish added
+  const handleDishAdded = (newDish) => {
+    setDishes((prev) => [...prev, newDish]);
+  };
+
+  // Handle dish updated
+  const handleDishUpdated = (updatedDish) => {
+    setDishes((prevDishes) =>
+      prevDishes.map((dish) =>
+        dish.id === updatedDish.id ? updatedDish : dish
+      )
+    );
   };
 
   // Loading state
@@ -148,7 +162,7 @@ const AdminDishesById = () => {
             )}
 
             <button
-              onClick={handleAddDish}
+              onClick={() => setIsAddModalOpen(true)}
               className="bg-[#F59E0B] text-white px-4 py-2 rounded hover:bg-[#e18f06] transition flex items-center gap-2"
             >
               <FaPlus />
@@ -178,20 +192,20 @@ const AdminDishesById = () => {
                   >
                     {/* Dish Image */}
                     <div className="flex items-center space-x-1 absolute top-2 right-2">
-                                    <button
-                                      onClick={() => handleEditDish(dish.id)}
-                                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
-                                    >
-                                      <FiEdit className="text-black" size={20} />
-                                    </button>
-                    
-                                    <button
-                                      onClick={() => handleDeleteDish(dish.id)}
-                                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
-                                    >
-                                      <FiTrash className="text-black" size={20} />
-                                    </button>
-                                  </div>
+                      <button
+                        onClick={() => handleEditDish(dish.id)}
+                        className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
+                      >
+                        <FiEdit className="text-black" size={20} />
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteDish(dish.id)}
+                        className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-all"
+                      >
+                        <FiTrash className="text-black" size={20} />
+                      </button>
+                    </div>
                     <img
                       src={dish.dish_image}
                       alt={dish.name}
@@ -215,6 +229,22 @@ const AdminDishesById = () => {
           </div>
         </div>
       </div>
+      {/* Add Dish Modal */}
+      <AddDishModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onDishAdded={handleDishAdded}
+      />
+      {/* Update Dish Modal */}
+      <UpdateDishModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setSelectedDish(null);
+        }}
+        dish={selectedDish}
+        onDishUpdated={handleDishUpdated}
+      />
     </div>
   );
 };

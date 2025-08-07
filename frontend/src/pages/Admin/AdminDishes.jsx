@@ -17,6 +17,8 @@ const AdminDishes = () => {
         setLoading(true);
         const response = await fetch("http://localhost:5176/api/dishes");
 
+        console.log("Selected Dish:", selectedDish);
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -64,9 +66,11 @@ const AdminDishes = () => {
 
   // Handle edit dish
   const handleEditDish = (dishId) => {
-    console.log("Editing dish:", dishId);
-    setSelectedDish(dishId);
-    setIsUpdateModalOpen(true);
+    const dishToEdit = dishes.find((d) => d.id === dishId);
+    if (dishToEdit) {
+      setSelectedDish(dishToEdit);
+      setIsUpdateModalOpen(true);
+    }
   };
 
   // Handle dish added
@@ -114,7 +118,7 @@ const AdminDishes = () => {
   }
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 py-12 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-10 px-6 font-['Playfair_Display']">
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">
           All Dishes ({dishes.length} dishes)
@@ -125,22 +129,6 @@ const AdminDishes = () => {
         >
           Add a Dish
         </button>
-        {/* Add Dish Modal */}
-        <AddDishModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          onDishAdded={handleDishAdded}
-        />
-        {/* Update Dish Modal */}
-        <UpdateDishModal
-          isOpen={isUpdateModalOpen}
-          onClose={() => {
-            setIsUpdateModalOpen(false);
-            setSelectedDish(null);
-          }}
-          dish={selectedDish}
-          onDishUpdated={handleDishUpdated}
-        />
       </div>
 
       {dishes.length === 0 ? (
@@ -190,6 +178,22 @@ const AdminDishes = () => {
           ))}
         </div>
       )}
+      {/* Add Dish Modal */}
+      <AddDishModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onDishAdded={handleDishAdded}
+      />
+      {/* Update Dish Modal */}
+      <UpdateDishModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setSelectedDish(null);
+        }}
+        dish={selectedDish}
+        onDishUpdated={handleDishUpdated}
+      />
     </div>
   );
 };
