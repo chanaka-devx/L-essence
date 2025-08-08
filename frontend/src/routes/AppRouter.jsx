@@ -44,27 +44,21 @@ const router = createBrowserRouter([
     path: '/admin',
     element: <PrivateRoute/>,
     children: [
-      {
-        index: true,
-        element: <AdminDashboard />
-      },
-      {
-        path: 'categories',
-        element: <AdminCategories />
-      },
-      {
-        path: 'categories/:categoryId/dishes',
-        element: <AdminDishesById />
-      },
-      {
-        path: 'dishes',
-        element: <AdminDishes />
-      },
-      {
-        path: 'bookings',
-        element: <div className="p-10 text-center">Admin Bookings Page - Coming Soon</div>
-      }
-    ]
+    {
+      path: '',
+      element: <AdminLayout />, // 👈 actual layout with navbar/footer
+      children: [
+        { index: true, element: <AdminDashboard /> },
+        { path: 'categories', element: <AdminCategories /> },
+        { path: 'categories/:categoryId/dishes', element: <AdminDishesById /> },
+        { path: 'dishes', element: <AdminDishes /> },
+        {
+          path: 'bookings',
+          element: <div className="p-10 text-center">Admin Bookings Page - Coming Soon</div>
+        }
+      ]
+    }
+  ]
   }
 ]);
 

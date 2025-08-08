@@ -1,8 +1,17 @@
 import React from "react";
 import { FiLogOut } from "react-icons/fi";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import useAuth from '../../context/useAuth';
 
 const AdminNavbar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logout(); // Clear auth state and remove token
+    navigate('/login'); // Redirect to login page
+  };
+
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full">
       <div className="max-w-7xl mx-auto px-2 py-5 flex items-center justify-between">
@@ -57,7 +66,7 @@ const AdminNavbar = () => {
             Bookings
           </NavLink>
           <button
-            onClick={() => alert("Logging out...")}
+            onClick={handleLogout}
             className="flex items-center gap-1 hover:text-[#F59E0B] transition"
           >
             <FiLogOut />

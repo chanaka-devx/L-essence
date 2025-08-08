@@ -56,7 +56,7 @@ const Login = () => {
       login(formData.username);
       
       // Redirect to admin dashboard
-      navigate("/admin/dashboard");
+      navigate("/admin");
       
     } catch (err) {
       setError(err.message || "An error occurred during login");

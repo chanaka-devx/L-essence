@@ -67,7 +67,7 @@ const Signup = () => {
       
       // Redirect to admin dashboard after successful signup
       setTimeout(() => {
-        navigate("/admin/dashboard");
+        navigate("/admin");
       }, 2000);
       
     } catch (err) {
