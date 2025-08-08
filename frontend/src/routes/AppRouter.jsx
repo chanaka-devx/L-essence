@@ -8,6 +8,9 @@ import AdminCategories from '../pages/Admin/AdminCategories';
 import AdminDashboard from '../pages/Admin/AdminDashboard';
 import AdminDishesById from '../pages/Admin/AdminDishesById';
 import AdminDishes from '../pages/Admin/AdminDishes';
+import PrivateRoute from '../components/PrivateRoute';
+import Login from '../pages/Auth/Login';
+import Signup from '../pages/Auth/Signup';
 
 // You can add more routes as needed
 const router = createBrowserRouter([
@@ -26,12 +29,20 @@ const router = createBrowserRouter([
       {
         path: 'about',
         element: <About />
-      }
+      },
     ]
   },
   {
+    path: '/signup',
+    element: <Signup />
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
     path: '/admin',
-    element: <AdminLayout />,
+    element: <PrivateRoute/>,
     children: [
       {
         index: true,

@@ -1,12 +1,15 @@
 const pool = require('../config/db');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 // CLOUDINARY CONFIG
 cloudinary.config({
-  cloud_name: "dhbormcgi",
-  api_key: "747529268123495",
-  api_secret: "e-imcDaPM2qa7rDbYHeERv6o6R8",
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // GET all dishes
