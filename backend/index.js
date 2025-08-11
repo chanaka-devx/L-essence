@@ -11,6 +11,7 @@ const dishesRoutes = require('./routes/dishRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const timeSlotRoutes = require('./routes/timeSlotRoutes');
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,7 @@ app.use('/api/dishes', dishesRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/timeslots', timeSlotRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the L-essence backend!');

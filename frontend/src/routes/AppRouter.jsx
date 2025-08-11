@@ -11,6 +11,7 @@ import AdminDishes from '../pages/Admin/AdminDishes';
 import PrivateRoute from '../components/PrivateRoute';
 import Login from '../pages/Auth/Login';
 import Signup from '../pages/Auth/Signup';
+import AvailableTables from '../pages/Tables/AvailableTables';
 
 // You can add more routes as needed
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/tables',
+    element: <AvailableTables />
   },
   {
     path: '/admin',
