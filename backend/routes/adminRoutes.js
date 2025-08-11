@@ -1,6 +1,6 @@
 const express = require('express');
 const AdminController = require('../controllers/adminController');
-const validateUsername = require('../middleware/validateUsername');
+const validateUsername = require('../middleware/validateEmail');
 
 const router = express.Router();
 

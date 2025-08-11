@@ -32,7 +32,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/users/login", {
+      const response = await fetch("http://localhost:5176/api/admins/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

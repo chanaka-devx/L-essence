@@ -9,6 +9,8 @@ dotenv.config();
 const categoriesRoutes = require('./routes/categoryRoutes');
 const dishesRoutes = require('./routes/dishRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const userRoutes = require('./routes/userRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 app.use(cors());
@@ -18,7 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/dishes', dishesRoutes);
-app.use('/api/users', adminRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/admins', adminRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the L-essence backend!');

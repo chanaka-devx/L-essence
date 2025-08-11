@@ -23,14 +23,14 @@ exports.signup = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user with role defaulting to 'admin'
+    // Insert new user with role defaulting to 'customer'
     await db.query(
-      "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'admin')",
+      "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'customer')",
       [name || null, email, phone || null, hashedPassword]
     );
 
     // Generate JWT token with email and role
-    const token = jwt.sign({ email, role: "admin" }, JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ email, role: "customer" }, JWT_SECRET, { expiresIn: "1d" });
 
     res.status(201).json({ message: "Signup successful", token });
   } catch (err) {
@@ -39,6 +39,7 @@ exports.signup = async (req, res) => {
   }
 };
 
+// LOGIN API
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -51,10 +52,6 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
 
     const user = rows[0];
-
-    if (user.role !== "admin") {
-      return res.status(403).json({ error: "Access denied: Admins only" });
-    }
     
     const isMatch = await bcrypt.compare(password, user.password);
 

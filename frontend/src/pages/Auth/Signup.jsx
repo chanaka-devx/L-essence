@@ -45,7 +45,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/users/signup", {
+      const response = await fetch("http://localhost:5176/api/admins/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
