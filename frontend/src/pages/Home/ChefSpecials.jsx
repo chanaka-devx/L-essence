@@ -11,13 +11,13 @@ const ChefSpecials = () => {
         const categoriesRes = await axios.get("http://localhost:5176/api/categories");
         const categories = categoriesRes.data.data;
 
-        // Step 2: Find the category named "Chef Special"
+        // Step 2: Find the category named "Chef's Specials"
         const chefSpecialCategory = categories.find(cat =>
-          cat.name.toLowerCase() === "chef special"
+          cat.name.toLowerCase() === "chef's specials"
         );
 
         if (!chefSpecialCategory) {
-          console.warn("Chef Special category not found.");
+          console.warn("Chef's Specials category not found.");
           return;
         }
 

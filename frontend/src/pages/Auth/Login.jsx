@@ -4,7 +4,7 @@ import useAuth from "../../context/useAuth";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: ""
   });
   const [error, setError] = useState("");
@@ -25,20 +25,20 @@ const Login = () => {
     setError("");
     
     // Basic validation
-    if (!formData.username || !formData.password) {
-      setError("Username and password are required");
+    if (!formData.email || !formData.password) {
+      setError("Email and password are required");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/admins/login", {
+      const response = await fetch("http://localhost:5176/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username: formData.username,
+          email: formData.email,
           password: formData.password
         })
       });
@@ -53,7 +53,7 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       
       // Use the auth context to set the logged in state
-      login(formData.username);
+      login(formData.email);
       
       // Redirect to admin dashboard
       navigate("/admin");
@@ -79,15 +79,15 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Username
+              Email
             </label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               className="w-full p-2 border border-[#F4C430] rounded focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
-              placeholder="Enter your username"
+              placeholder="Enter your email"
             />
           </div>
           

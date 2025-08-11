@@ -1,19 +1,17 @@
-const validateUsername = (req, res, next) => {
-  const { username } = req.body;
+const validateEmail = (req, res, next) => {
+  const { email } = req.body;
 
-  // Simple regex for email
+  // Simple regex for email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Simple Sri Lankan mobile number check (e.g. 0711234567 or +94711234567)
-  const phoneRegex = /^(?:\+94|0)?7\d{8}$/;
-
-  if (!username || (!emailRegex.test(username) && !phoneRegex.test(username))) {
+  if (!email || !emailRegex.test(email)) {
     return res.status(400).json({
-      error: "Username must be a valid email or mobile number",
+      error: "Email must be a valid email address",
     });
   }
 
   next(); // Proceed to controller
 };
 
-module.exports = validateUsername;
+module.exports = validateEmail;
+

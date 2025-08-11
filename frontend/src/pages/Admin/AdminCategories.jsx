@@ -160,7 +160,7 @@ const AdminCategories = () => {
   }
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 pb-10 px-6 font-['Playfair_Display']">
       {/* Header */}
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">Food Categories</h2>
@@ -174,7 +174,7 @@ const AdminCategories = () => {
       </div>
 
       {/* Category List */}
-      <div className="space-y-4 max-w-5xl mx-auto">
+      <div className="space-y-4 max-w-6xl mx-auto">
         {categories.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-[#333333] text-lg">No categories found.</p>

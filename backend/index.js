@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/dishes', dishesRoutes);
-app.use('/api/admins', adminRoutes);
+app.use('/api/users', adminRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the L-essence backend!');

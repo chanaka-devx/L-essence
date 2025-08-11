@@ -9,25 +9,28 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // SIGNUP API
 exports.signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { name, email, phone, password } = req.body;
 
-  if (!username || !password)
-    return res.status(400).json({ error: "Username and password required" });
+  if (!email || !password)
+    return res.status(400).json({ error: "Email and password are required" });
 
   try {
-    // check if already exists
-    const [rows] = await db.query("SELECT * FROM admins WHERE username = ?", [username]);
+    // Check if user with the email already exists
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (rows.length > 0)
-      return res.status(409).json({ error: "Admin already exists" });
+      return res.status(409).json({ error: "User with this email already exists" });
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query("INSERT INTO admins (username, password) VALUES (?, ?)", [
-      username,
-      hashedPassword,
-    ]);
+    // Insert new user with role defaulting to 'customer'
+    await db.query(
+      "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'customer')",
+      [name || null, email, phone || null, hashedPassword]
+    );
 
-    const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "1d" });
+    // Generate JWT token with email and role
+    const token = jwt.sign({ email, role: "customer" }, JWT_SECRET, { expiresIn: "1d" });
 
     res.status(201).json({ message: "Signup successful", token });
   } catch (err) {
@@ -37,24 +40,29 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password)
-    return res.status(400).json({ error: "Username and password are required" });
+  if (!email || !password)
+    return res.status(400).json({ error: "Email and password are required" });
 
   try {
-    const [rows] = await db.query("SELECT * FROM admins WHERE username = ?", [username]);
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (rows.length === 0)
       return res.status(401).json({ error: "Invalid credentials" });
 
     const user = rows[0];
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ error: "Access denied: Admins only" });
+    }
+    
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch)
       return res.status(401).json({ error: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user.id, username: user.username },
+      { id: user.user_id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: "1d" }
     );
