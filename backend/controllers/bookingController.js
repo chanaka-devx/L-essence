@@ -59,3 +59,39 @@ exports.getAllBookings = async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
+// Update booking status
+exports.updateBookingStatus = async (req, res) => {
+  try {
+    const { booking_id } = req.params;
+    const { status } = req.body;
+
+    // Validate inputs
+    if (!booking_id || !status) {
+      return res.status(400).json({ error: "Booking ID and status are required" });
+    }
+
+    // Ensure status is one of the allowed values
+    const validStatuses = ["pending", "confirmed", "cancelled", "completed"];
+    if (!validStatuses.includes(status.toLowerCase())) {
+      return res.status(400).json({ error: "Invalid booking status" });
+    }
+
+    // Update in database
+    const [result] = await db.query(
+      `UPDATE Bookings SET status = ? WHERE booking_id = ?`,
+      [status, booking_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    res.json({ message: "Booking status updated successfully" });
+  } catch (err) {
+    console.error("Error updating booking status:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
