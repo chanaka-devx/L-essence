@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useAuth from "../../context/useAuth";
+import useAuth from "../context/useAuth";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    password: ""
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,14 +16,14 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: value
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+    
     // Basic validation
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
@@ -32,15 +32,15 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/admins/login", {
+      const response = await fetch("http://localhost:5176/api/users/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password,
-        }),
+          password: formData.password
+        })
       });
 
       const data = await response.json();
@@ -49,20 +49,15 @@ const Login = () => {
         throw new Error(data.error || "Login failed");
       }
 
-      // Store token and role in localStorage
+      // Store token in localStorage
       localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-
+      
       // Use the auth context to set the logged in state
-      login(formData.email, data.role);
-
-      // Redirect based on role
-      if (data.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/tables");
-      }
-
+      login(formData.email);
+      
+      // Redirect to admin dashboard
+      navigate("/tables");
+      
     } catch (err) {
       setError(err.message || "An error occurred during login");
     } finally {
@@ -73,16 +68,14 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FFFFE0] font-['Playfair_Display']">
       <div className="bg-white p-8 rounded-lg shadow-md border border-[#F4C430] w-full max-w-md">
-        <h2 className="text-2xl mb-6 text-[#333333] font-semibold text-center">
-          Admin Login
-        </h2>
-
+        <h2 className="text-2xl mb-6 text-[#333333] font-semibold text-center">User Login</h2>
+        
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,7 +90,7 @@ const Login = () => {
               placeholder="Enter your email"
             />
           </div>
-
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -111,7 +104,7 @@ const Login = () => {
               placeholder="Enter your password"
             />
           </div>
-
+          
           <button
             type="submit"
             disabled={loading}
@@ -120,9 +113,9 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
+        
         <div className="mt-6 text-center">
-          <Link to="/signup" className="text-[#F59E0B] hover:underline text-sm">
+          <Link to="/usersignup" className="text-[#F59E0B] hover:underline text-sm">
             Don't have an account? Sign Up
           </Link>
         </div>
