@@ -12,6 +12,8 @@ import PrivateRoute from '../components/PrivateRoute';
 import Login from '../pages/Auth/Login';
 import Signup from '../pages/Auth/Signup';
 import AvailableTables from '../pages/Tables/AvailableTables';
+import AdminBookings from '../pages/Admin/AdminBookings';
+import AdminTables from '../pages/Admin/AdminTables';
 
 // You can add more routes as needed
 const router = createBrowserRouter([
@@ -57,10 +59,8 @@ const router = createBrowserRouter([
         { path: 'categories', element: <AdminCategories /> },
         { path: 'categories/:categoryId/dishes', element: <AdminDishesById /> },
         { path: 'dishes', element: <AdminDishes /> },
-        {
-          path: 'bookings',
-          element: <div className="p-10 text-center">Admin Bookings Page - Coming Soon</div>
-        }
+        { path: 'bookings', element: <AdminBookings /> },
+        { path: 'tables', element: <AdminTables /> }
       ]
     }
   ]

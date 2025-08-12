@@ -42,8 +42,10 @@ exports.getAllBookings = async (req, res) => {
       SELECT 
         b.booking_id,
         b.booking_date,
+        b.status,
         u.name AS customer_name,
         u.email AS customer_email,
+        u.phone AS customer_phone,
         t.location AS table_location,
         t.seats AS table_seats
       FROM Bookings b

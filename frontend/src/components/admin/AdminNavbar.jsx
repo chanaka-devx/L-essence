@@ -56,6 +56,16 @@ const AdminNavbar = () => {
             Dishes
           </NavLink>
           <NavLink
+            to="/admin/tables"
+            className={({ isActive }) =>
+              isActive
+                ? "text-[#F59E0B] transition"
+                : "hover:text-[#F59E0B] transition"
+            }
+          >
+            Tables
+          </NavLink>
+          <NavLink
             to="/admin/bookings"
             className={({ isActive }) =>
               isActive
