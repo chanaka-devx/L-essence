@@ -59,14 +59,60 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user.user_id, email: user.email, role: user.role },
+      { user_id: user.user_id, name: user.name, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token, role: user.role, });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Get logged-in user's profile
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.user_id;  // 👈 works now
+    const [rows] = await db.query(
+      "SELECT user_id, name, email, phone, role FROM users WHERE user_id = ?",
+      [userId]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ error: "User not found" });
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Profile fetch error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+// Update logged-in user's profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    const { name, email, phone } = req.body;
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const [result] = await db.query(
+      "UPDATE users SET name = ?, email = ?, phone = ? WHERE user_id = ?",
+      [name, email, phone, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({ message: "User updated successfully" });
+  } catch (err) {
+    console.error("Update error:", err);
+    return res.status(500).json({ message: "Server error", error: err });
   }
 };

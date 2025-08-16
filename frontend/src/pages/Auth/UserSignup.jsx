@@ -45,7 +45,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/admins/signup", {
+      const response = await fetch("http://localhost:5176/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -73,7 +73,7 @@ const Signup = () => {
       setSuccessMessage("Signup successful!");
 
       setTimeout(() => {
-        navigate("/admin"); // Adjust the redirect as needed
+        navigate("/tables"); 
       }, 2000);
 
     } catch (err) {
@@ -86,7 +86,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FFFFE0] font-['Playfair_Display']">
       <div className="bg-white p-8 rounded-lg shadow-md border border-[#F4C430] w-full max-w-md">
-        <h2 className="text-2xl mb-6 text-[#333333] font-semibold text-center">Sign Up</h2>
+        <h2 className="text-2xl mb-6 text-[#333333] font-semibold text-center">User Sign Up</h2>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -103,7 +103,7 @@ const Signup = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name (optional)
+              Name *
             </label>
             <input
               type="text"
@@ -132,7 +132,7 @@ const Signup = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone (optional)
+              Phone *
             </label>
             <input
               type="tel"
@@ -184,7 +184,7 @@ const Signup = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <Link to="/login" className="text-[#F59E0B] hover:underline text-sm">
+          <Link to="/userlogin" className="text-[#F59E0B] hover:underline text-sm">
             Already have an account? Login
           </Link>
         </div>

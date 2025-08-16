@@ -89,14 +89,14 @@ const AvailableTables = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 p-6">
+    <div className="min-h-screen bg-[#FFFFE0] p-6 mt-20">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 font-['Playfair_Display'] mb-2">
+        <div className="text-center p-4">
+          <h1 className="text-3xl font-bold text-gray-800 font-['Playfair_Display'] mb-2">
             Find Your Perfect Table
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-md">
             Discover available tables for your dining experience
           </p>
         </div>

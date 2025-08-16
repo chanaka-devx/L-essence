@@ -73,10 +73,8 @@ const Dishes = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFE0] font-['Playfair_Display']">
+    <div className="mt-28 min-h-screen bg-[#FFFFE0] font-['Playfair_Display']">
       <div>
-        <div className="h-24 bg-[#2C3E50] bg-black/50 backdrop-blur-md shadow-md mb-6">
-        </div>
       </div>
       <div className=" mx-auto">
         {/* Header with Category Info */}

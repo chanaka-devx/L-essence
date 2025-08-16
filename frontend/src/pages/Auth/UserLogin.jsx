@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useAuth from "../context/useAuth";
+import useAuth from "../../context/useAuth";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -50,12 +50,17 @@ const Login = () => {
       }
 
       // Store token in localStorage
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("user_data", JSON.stringify({
+        email: formData.email,
+        role: data.role,
+        id: data.user_id
+      }));
       
       // Use the auth context to set the logged in state
-      login(formData.email);
-      
-      // Redirect to admin dashboard
+      login(formData.email, data.role);
+
+      // Redirect to tables
       navigate("/tables");
       
     } catch (err) {

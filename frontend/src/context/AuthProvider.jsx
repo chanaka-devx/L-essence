@@ -3,17 +3,17 @@ import AuthContext from "./AuthContext";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("admin_user");
+    const storedUser = localStorage.getItem("user_data");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const login = (username) => {
-    const userData = { username };
-    localStorage.setItem("admin_user", JSON.stringify(userData));
+  const login = (email, role) => {
+    const userData = { email, role };
+    localStorage.setItem("user_data", JSON.stringify(userData));
     setUser(userData);
   };
   const logout = () => {
-    localStorage.removeItem("admin_user");
+    localStorage.removeItem("user_data");
     setUser(null);
   };
 
