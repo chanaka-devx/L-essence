@@ -74,16 +74,25 @@ const Dishes = () => {
 
   return (
     <div className="mt-20 pt-2 min-h-screen bg-[#FFFFE0] font-['Playfair_Display']">
-      <div>
-      </div>
+      <div></div>
       <div className=" mx-auto">
         {/* Header with Category Info */}
-        <div className="max-w-7xl mx-auto px-4 py-6 items-center">
-            {category && (
-              <h1 className="text-3xl font-semibold text-center text-[#333333]">
-                {category.name}
-              </h1>
-            )}
+        <div className="relative max-w-7xl mx-auto px-4 py-6 flex items-center justify-center">
+          <button
+            onClick={() => {
+              navigate("/", { state: { scrollTo: "categories" } });
+            }}
+            className="absolute left-4 flex items-center text-[#F59E0B] hover:text-[#d97706] transition-colors"
+          >
+            <FaArrowLeft className="mr-1" />
+            Back to Categories
+          </button>
+
+          {category && (
+            <h1 className="text-3xl font-semibold text-[#333333] text-center">
+              {category.name}
+            </h1>
+          )}
         </div>
 
         {/* Dishes List */}
@@ -117,7 +126,9 @@ const Dishes = () => {
                       <h3 className="text-[#333333] text-xl font-medium font-semibold">
                         {dish.name}
                       </h3>
-                      <p className="text-sm text-[#F59E0B] mt-1">{dish.cuisine_type}</p>
+                      <p className="text-sm text-[#F59E0B] mt-1">
+                        {dish.cuisine_type}
+                      </p>
                       <p className="text-[#333333] mt-1">LKR {dish.price}</p>
                     </div>
                   </div>

@@ -1,7 +1,22 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import { useLocation } from "react-router-dom";
 import bannerImage from '../../assets/images/hero/banner1.jpg';
 
 const HeroSection = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+
+    if (location.state?.scrollTo === "categories") {
+      const section = document.getElementById("categories");
+      if (section) {
+        setTimeout(() => {
+          section.scrollIntoView({ behavior: "smooth" });
+        }, 200); // delay to ensure DOM is ready
+      }
+    }
+  }, [location]);
+
   return (
     <section
       className="relative h-screen w-full bg-cover bg-center flex items-center justify-start px-20"
