@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUsers, FaUtensils, FaTags, FaChair } from "react-icons/fa";
+const BASE_URL = import.meta.env?.API_BASE_URL
 import Profile from "../../assets/images/profile.jpg";
 import AdminDetailsModal from "./AdminDetailsModal";
 
@@ -19,7 +20,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://localhost:5176/api/admin/stats", {
+      const res = await axios.get(`${BASE_URL}/api/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCounts(res.data);

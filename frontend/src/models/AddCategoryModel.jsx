@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const BASE_URL = import.meta.env?.API_BASE_URL
 
 const AddCategoryModal = ({ isOpen, onClose, onCategoryAdded }) => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const AddCategoryModal = ({ isOpen, onClose, onCategoryAdded }) => {
         formDataToSend.append('image', formData.image);
       }
 
-      const response = await fetch('http://localhost:5176/api/categories', {
+      const response = await fetch(`${BASE_URL}/api/categories`, {
         method: 'POST',
         body: formDataToSend,
         headers: {}

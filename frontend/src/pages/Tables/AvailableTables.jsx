@@ -89,7 +89,7 @@ const AvailableTables = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#FFFFE0] p-6 mt-20">
+    <div className="min-h-screen bg-[#FFFFE0] p-6 mt-16">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center p-4">

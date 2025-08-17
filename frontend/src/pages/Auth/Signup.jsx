@@ -84,7 +84,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FFFFE0] font-['Playfair_Display']">
+    <div className="mt-20 mb-2 flex items-center justify-center bg-[#FFFFE0] font-['Playfair_Display']">
       <div className="bg-white p-8 rounded-lg shadow-md border border-[#F4C430] w-full max-w-md">
         <h2 className="text-2xl mb-6 text-[#333333] font-semibold text-center">Sign Up</h2>
 
@@ -103,7 +103,7 @@ const Signup = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name (optional)
+              Name *
             </label>
             <input
               type="text"

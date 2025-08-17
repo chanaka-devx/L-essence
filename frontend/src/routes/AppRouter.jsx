@@ -27,12 +27,12 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'categories/:categoryId/dishes', element: <Dishes /> },
       { path: 'about', element: <About /> },
+      { path: '/signup', element: <Signup /> },
+      { path: '/login', element: <Login /> },
+      { path: '/usersignup', element: <UserSignup/> },
+      { path: '/userlogin', element: <UserLogin /> },
     ]
   },
-  { path: '/signup', element: <Signup /> },
-  { path: '/login', element: <Login /> },
-  { path: '/usersignup', element: <UserSignup/> },
-  { path: '/userlogin', element: <UserLogin /> },
   
   {
     path: '/tables',
