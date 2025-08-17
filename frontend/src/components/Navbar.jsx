@@ -70,7 +70,7 @@ const Navbar = () => {
         </ul>
 
         {/* Button */}
-        <button className="ml-4 bg-gold text-white px-4 py-2 rounded hover:opacity-90 hover:text-black text-lg font-bold-200 transition">
+        <button className="ml-4 bg-gold text-white px-4 py-2 rounded hover:bg-[#e18f06] text-lg font-bold-200 transition">
           <NavLink 
               to="/tables" 
             >

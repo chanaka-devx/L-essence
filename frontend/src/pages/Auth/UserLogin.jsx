@@ -50,7 +50,7 @@ const Login = () => {
       }
 
       // Store token in localStorage
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user_data", JSON.stringify({
         email: formData.email,
         role: data.role,
@@ -81,7 +81,7 @@ const Login = () => {
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -118,10 +118,13 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        
-        <div className="mt-6 text-center">
+
+        <div className="mt-4 text-center flex flex-col pt-2">
           <Link to="/usersignup" className="text-[#F59E0B] hover:underline text-sm">
             Don't have an account? Sign Up
+          </Link>
+          <Link to="/" className="mt-2 text-[#F59E0B] hover:underline text-sm">
+            Go to Home
           </Link>
         </div>
       </div>

@@ -116,3 +116,35 @@ exports.updateProfile = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: err });
   }
 };
+
+// Fetch logged-in user's bookings
+exports.getUserBookings = async (req, res) => {
+  try {
+    const userId = req.user.user_id; // Logged-in user from token
+
+    const [rows] = await db.query(
+      `SELECT 
+         b.booking_id, 
+         b.booking_date, 
+         b.status, 
+         t.location, 
+         ts.start_time, 
+         ts.end_time
+       FROM Bookings b
+       JOIN tables t ON b.table_id = t.table_id
+       JOIN timeslots ts ON b.timeslot_id = ts.timeslot_id
+       WHERE b.user_id = ?
+       ORDER BY b.booking_date DESC, ts.start_time ASC`,
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(200).json({ message: "No bookings found", bookings: [] });
+    }
+
+    res.json({ bookings: rows });
+  } catch (err) {
+    console.error("Get user bookings error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

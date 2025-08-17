@@ -50,7 +50,7 @@ const Login = () => {
       }
 
       // Store token and user data consistently
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user_data", JSON.stringify({
         email: formData.email,
         role: data.role,

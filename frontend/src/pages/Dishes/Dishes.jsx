@@ -73,12 +73,12 @@ const Dishes = () => {
   }
 
   return (
-    <div className="mt-28 min-h-screen bg-[#FFFFE0] font-['Playfair_Display']">
+    <div className="mt-20 pt-2 min-h-screen bg-[#FFFFE0] font-['Playfair_Display']">
       <div>
       </div>
       <div className=" mx-auto">
         {/* Header with Category Info */}
-        <div className="max-w-7xl pt-2 mb-6 mt-4">
+        <div className="max-w-7xl mx-auto px-4 py-6 items-center">
             {category && (
               <h1 className="text-3xl font-semibold text-center text-[#333333]">
                 {category.name}
@@ -93,9 +93,6 @@ const Dishes = () => {
               <div className="text-center py-8">
                 <p className="text-[#333333] text-lg">
                   No dishes found in this category.
-                </p>
-                <p className="text-[#666666] text-sm">
-                  Start by adding your first dish.
                 </p>
               </div>
             ) : (

@@ -43,7 +43,7 @@ exports.getAvailableTables = async (req, res) => {
 // GET all tables
 exports.getAllTables = async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM tables ORDER BY table_id ASC');
+    const [rows] = await db.query('SELECT * FROM tables ORDER BY table_id ASC');
 
     res.status(200).json({ success: true, data: rows });
   } catch (error) {
