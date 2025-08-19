@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BASE_URL } from '../config/apiConfig';
 
 const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5176/api/categories');
+      const response = await fetch(`${BASE_URL}/api/categories`);
       const data = await response.json();
       if (data.success) setCategories(data.data);
     } catch (err) {
@@ -53,7 +54,7 @@ const AddDishModal = ({ isOpen, onClose, onDishAdded }) => {
         formDataToSend.append('image', formData.image);
       }
 
-      const response = await fetch('http://localhost:5176/api/dishes', {
+      const response = await fetch(`${BASE_URL}/api/dishes`, {
         method: 'POST',
         body: formDataToSend,
       });

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../../context/useAuth";
+import { BASE_URL } from "../../config/apiConfig";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -35,7 +36,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/users/login", {
+      const response = await fetch(`${BASE_URL}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

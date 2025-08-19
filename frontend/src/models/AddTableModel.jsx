@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BASE_URL } from '../config/apiConfig';
 
 const AddTableModal = ({ isOpen, onClose, onTableAdded }) => {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const AddTableModal = ({ isOpen, onClose, onTableAdded }) => {
         throw new Error('Image is required');
       }
 
-      const response = await fetch('http://localhost:5176/api/tables', {
+      const response = await fetch(`${BASE_URL}/api/tables`, {
         method: 'POST',
         body: formDataToSend,
       });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -13,7 +14,7 @@ const AdminBookings = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5176/api/bookings/all");
+      const res = await axios.get(`${BASE_URL}/api/bookings/all`);
       let data = res.data.bookings || [];
 
       // Apply filters client-side
@@ -61,7 +62,7 @@ const AdminBookings = () => {
     setUpdatingBooking(bookingId);
     try {
       const response = await axios.put(
-        `http://localhost:5176/api/bookings/${bookingId}/status`,
+        `${BASE_URL}/api/bookings/${bookingId}/status`,
         { status: newStatus }
       );
 

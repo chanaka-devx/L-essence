@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import { BASE_URL } from "../../config/apiConfig";
 import {
   Calendar,
   Clock,
@@ -46,7 +47,7 @@ const AvailableTables = () => {
 
   // Fetch time slots
   useEffect(() => {
-    fetch("http://localhost:5176/api/timeslots")
+    fetch(`${BASE_URL}/api/timeslots`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -73,7 +74,7 @@ const AvailableTables = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5176/api/tables/available?date=${date}&timeslot_id=${selectedTimeSlot}`
+        `${BASE_URL}/api/tables/available?date=${date}&timeslot_id=${selectedTimeSlot}`
       );
       const data = await response.json();
 
@@ -127,7 +128,7 @@ const AvailableTables = () => {
       setBookingSuccess(null);
 
       await axios.post(
-        "http://localhost:5176/api/bookings/book",
+        `${BASE_URL}/api/bookings/book`,
         {
           table_id: selectedTable.table_id,
           timeslot_id: Number(selectedTimeSlot),

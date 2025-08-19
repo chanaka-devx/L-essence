@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../config/apiConfig";
 
 const ChefSpecials = () => {
   const [specials, setSpecials] = useState([]);
@@ -12,7 +13,7 @@ const ChefSpecials = () => {
       setError(null);
 
       //Get all categories
-      const categoriesRes = await axios.get("http://localhost:5176/api/categories");
+      const categoriesRes = await axios.get(`${BASE_URL}/api/categories`);
       const categories = categoriesRes.data.data;
 
       const chefSpecialCategory = categories.find(
@@ -26,7 +27,7 @@ const ChefSpecials = () => {
 
       //Fetch dishes for that category ID
       const dishesRes = await axios.get(
-        `http://localhost:5176/api/categories/${chefSpecialCategory.id}/dishes`
+        `${BASE_URL}/api/categories/${chefSpecialCategory.id}/dishes`
       );
       const dishes = dishesRes.data.data.dishes || [];
 

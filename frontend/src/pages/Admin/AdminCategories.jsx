@@ -4,6 +4,7 @@ import AddCategoryModal from "../../models/AddCategoryModel";
 import UpdateCategoryModal from "../../models/UpdateCategoryModel";
 import {FaArrowRight} from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminCategories = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AdminCategories = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/categories");
+      const response = await fetch(`${BASE_URL}/api/categories`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,7 +53,7 @@ const AdminCategories = () => {
       const countsData = {};
       
       for (const category of categoryList) {
-        const response = await fetch(`http://localhost:5176/api/categories/${category.id}/dishes/count`);
+        const response = await fetch(`${BASE_URL}/api/categories/${category.id}/dishes/count`);
         
         if (response.ok) {
           const result = await response.json();
@@ -72,7 +73,7 @@ const AdminCategories = () => {
   const handleDeleteCategory = async (categoryId) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        const response = await fetch(`http://localhost:5176/api/categories/${categoryId}`, {
+        const response = await fetch(`${BASE_URL}/api/categories/${categoryId}`, {
           method: 'DELETE',
         });
         

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UpdateUserModal from "../../models/UpdateUserModal";
+import { BASE_URL } from "../../config/apiConfig";
 
 const MyBookings = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -14,7 +15,7 @@ const MyBookings = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await axios.get("http://localhost:5176/api/users/me", {
+      const res = await axios.get(`${BASE_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
@@ -29,7 +30,7 @@ const MyBookings = () => {
       setLoading(true);
       setError(null);
 
-      const res = await axios.get("http://localhost:5176/api/users/me/bookings", {
+      const res = await axios.get(`${BASE_URL}/api/users/me/bookings`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -58,7 +59,7 @@ const MyBookings = () => {
 
   const handleUpdateUser = async (updatedData) => {
     try {
-      const res = await axios.put("http://localhost:5176/api/users/me", updatedData, {
+      const res = await axios.put(`${BASE_URL}/api/users/me`, updatedData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(res.data.message);
@@ -81,7 +82,7 @@ const MyBookings = () => {
 
     try {
       await axios.put(
-        `http://localhost:5176/api/bookings/${bookingId}/status`,
+        `${BASE_URL}/api/bookings/${bookingId}/status`,
         { status: "Cancelled" },
         { headers: { Authorization: `Bearer ${token}` } }
       );

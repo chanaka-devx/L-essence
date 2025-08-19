@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../config/apiConfig";
 
 const UpdateDishModal = ({
   isOpen,
@@ -22,7 +23,7 @@ const UpdateDishModal = ({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5176/api/categories");
+        const response = await fetch(`${BASE_URL}/api/categories`);
         if (response.ok) {
           const result = await response.json();
           setCategories(result.data || result);
@@ -92,7 +93,7 @@ if (!isOpen || !dish || typeof dish !== 'object') return null;
       }
 
       const response = await fetch(
-        `http://localhost:5176/api/dishes/${dish.id}`,
+        `${BASE_URL}/api/dishes/${dish.id}`,
         {
           method: "PUT",
           body: formDataToSend,

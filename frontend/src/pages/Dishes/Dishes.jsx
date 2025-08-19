@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { BASE_URL } from "../../config/apiConfig";
 
 const Dishes = () => {
   const { categoryId } = useParams();
@@ -15,7 +16,7 @@ const Dishes = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5176/api/categories/${categoryId}/dishes`
+          `${BASE_URL}/api/categories/${categoryId}/dishes`
         );
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

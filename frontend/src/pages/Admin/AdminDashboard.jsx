@@ -3,6 +3,7 @@ import axios from "axios";
 import { FaUsers, FaUtensils, FaTags, FaChair } from "react-icons/fa";
 import Profile from "../../assets/images/profile.jpg";
 import AdminDetailsModal from "./AdminDetailsModal";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminDashboard = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -19,7 +20,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get('http://localhost:5176/api/admin/stats', {
+      const res = await axios.get(`${BASE_URL}/api/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCounts(res.data);
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
   const fetchRecentBookings = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5176/api/admin/last-bookings",
+        `${BASE_URL}/api/admin/last-bookings`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRecentBookings(res.data.bookings);

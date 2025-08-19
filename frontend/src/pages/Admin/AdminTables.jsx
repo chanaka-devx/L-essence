@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import AddTableModal from "../../models/AddTableModel";
 import UpdateTableModal from "../../models/UpdateTableModel";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminTables = () => {
   const [tables, setTables] = useState([]);
@@ -17,7 +18,7 @@ const AdminTables = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5176/api/tables");
+      const res = await fetch(`${BASE_URL}/api/tables`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch tables");
       setTables(data.data);
@@ -36,7 +37,7 @@ const AdminTables = () => {
     if (!window.confirm("Are you sure you want to delete this table?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5176/api/tables/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/tables/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AddDishModal from "../../models/AddDishModel";
 import UpdateDishModal from "../../models/UpdateDishModel";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminDishes = () => {
   const [dishes, setDishes] = useState([]);
@@ -15,7 +16,7 @@ const AdminDishes = () => {
   const fetchAllDishes = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/dishes");
+      const response = await fetch(`${BASE_URL}/api/dishes`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,7 +46,7 @@ const AdminDishes = () => {
     if (window.confirm("Are you sure you want to delete this dish?")) {
       try {
         const response = await fetch(
-          `http://localhost:5176/api/dishes/${dishId}`,
+          `${BASE_URL}/api/dishes/${dishId}`,
           {
             method: "DELETE",
           }
