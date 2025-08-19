@@ -1,6 +1,5 @@
 const pool = require('../config/db');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
+const { uploadToCloudinary } = require('../utils/upload');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -25,11 +24,7 @@ exports.getAllCategories = async (req, res) => {
 };
 
 // CLOUDINARY CONFIG
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// No longer needed as it's configured in utils/upload.js
 
 // GET all dishes of a specific category
 exports.getDishesByCategory = async (req, res) => {
@@ -115,13 +110,9 @@ exports.createCategory = async (req, res) => {
       });
     }
 
-    // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, { 
-      folder: 'L-essence/categories' 
-    });
+    // Upload image to Cloudinary directly from buffer
+    const result = await uploadToCloudinary(req.file.buffer, 'L-essence/categories');
     
-    // Remove temporary file
-    fs.unlinkSync(req.file.path);
 
     const [insert] = await pool.execute(
       'INSERT INTO categories (name, description, image) VALUES (?, ?, ?)',
@@ -169,8 +160,7 @@ exports.updateCategory = async (req, res) => {
 
     let imageUrl = null;
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence' });
-      fs.unlinkSync(req.file.path);
+      const result = await uploadToCloudinary(req.file.buffer, 'L-essence');
       imageUrl = result.secure_url;
     }
 

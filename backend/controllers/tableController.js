@@ -1,16 +1,11 @@
 const db = require('../config/db');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
+const { uploadToCloudinary } = require('../utils/upload');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
 // CLOUDINARY CONFIG
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// No longer needed as it's configured in utils/upload.js
 
 exports.getAvailableTables = async (req, res) => {
   const { date, timeslot_id } = req.query;
@@ -73,9 +68,8 @@ exports.createTable = async (req, res) => {
 
     if (!req.file) return res.status(400).json({ success: false, message: 'Table image is required.' });
 
-    // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence/tables' });
-    fs.unlinkSync(req.file.path);
+    // Upload image to Cloudinary directly from buffer
+    const result = await uploadToCloudinary(req.file.buffer, 'L-essence/tables');
 
     const [insert] = await db.query(
       'INSERT INTO tables (location, seats, table_image) VALUES (?, ?, ?)',
@@ -112,11 +106,9 @@ exports.updateTable = async (req, res) => {
 
     let imageUrl = null;
     if (req.file) {
-      // Upload new image to Cloudinary
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence/tables' });
-      fs.unlinkSync(req.file.path);
+      // Upload new image to Cloudinary directly from buffer
+      const result = await uploadToCloudinary(req.file.buffer, 'L-essence/tables');
       imageUrl = result.secure_url;
-
     }
 
     const [update] = await db.query(

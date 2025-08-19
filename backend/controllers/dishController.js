@@ -1,16 +1,11 @@
 const pool = require('../config/db');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
+const { uploadToCloudinary } = require('../utils/upload');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
 // CLOUDINARY CONFIG
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// No longer needed as it's configured in utils/upload.js
 
 // GET all dishes
 exports.getAllDishes = async (req, res) => {
@@ -45,8 +40,7 @@ exports.createDish = async (req, res) => {
 
     if (!req.file) return res.status(400).json({ success: false, message: 'Image is required.' });
 
-    const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence/dishes' });
-    fs.unlinkSync(req.file.path);
+    const result = await uploadToCloudinary(req.file.buffer, 'L-essence/dishes');
 
     const [insert] = await pool.execute(
       'INSERT INTO dishes (name, price, cuisine_type, dish_image, category_id) VALUES (?, ?, ?, ?, ?)',
@@ -71,8 +65,7 @@ exports.updateDish = async (req, res) => {
 
     let imageUrl = null;
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence/dishes' });
-      fs.unlinkSync(req.file.path);
+      const result = await uploadToCloudinary(req.file.buffer, 'L-essence/dishes');
       imageUrl = result.secure_url;
     }
 
