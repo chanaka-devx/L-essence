@@ -58,7 +58,7 @@ exports.getAllBookings = async (req, res) => {
       ORDER BY b.booking_date DESC
     `);
 
-    // Optionally, format the time here if you want to return in AM/PM format
+    // format the time to AM/PM format
     const formattedBookings = bookings.map(b => ({
       ...b,
       start_time: b.start_time ? new Date(`1970-01-01T${b.start_time}Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }) : null,
