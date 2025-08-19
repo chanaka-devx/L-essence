@@ -125,7 +125,7 @@ const AdminDishesById = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6E3] mt-10 pt-10 p-8 font-['Playfair_Display']">
+    <div className="min-h-screen bg-[#FDF6E3] mt-10 pt-10 pb-6 font-['Playfair_Display']">
       <div className=" mx-auto">
         {/* Header with Category Info */}
         <div className="max-w-7xl pt-2 mx-auto">

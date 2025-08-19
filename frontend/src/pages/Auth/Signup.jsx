@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../context/useAuth";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,6 +72,10 @@ const Signup = () => {
         role: data.role,
         id: data.user_id
       }));
+      
+      // Update auth context state
+      login(formData.email, data.role);
+      
       setSuccessMessage("Signup successful!");
 
       setTimeout(() => {

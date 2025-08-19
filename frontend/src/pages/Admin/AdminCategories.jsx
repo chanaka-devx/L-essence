@@ -15,36 +15,36 @@ const AdminCategories = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  useEffect(() => {
-    // Simulate API call
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("http://localhost:5176/api/categories");
+  // Fetch categories function
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:5176/api/categories");
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-          setCategories(result.data);
-          fetchCategoryDishCounts(result.data);
-        } else {
-          throw new Error(result.message || "Failed to fetch categories");
-        }
-
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
 
+      const result = await response.json();
+
+      if (result.success) {
+        setCategories(result.data);
+        fetchCategoryDishCounts(result.data);
+      } else {
+        throw new Error(result.message || "Failed to fetch categories");
+      }
+
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCategories();
-  }, []);
+  }, []); 
   
   // Fetch dish counts for each category
   const fetchCategoryDishCounts = async (categoryList) => {
@@ -77,17 +77,7 @@ const AdminCategories = () => {
         });
         
         if (response.ok) {
-          setCategories(prevCats => {
-            const updatedCategories = prevCats.filter(cat => cat.id !== categoryId);
-            return updatedCategories;
-          });
-          
-          // Update dish counts
-          setCategoryDishCounts(prev => {
-            const newCounts = {...prev};
-            delete newCounts[categoryId];
-            return newCounts;
-          });
+          fetchCategories();
         } else {
           throw new Error('Failed to delete category');
         }
@@ -109,24 +99,13 @@ const AdminCategories = () => {
   };
 
   // Handle category addition
-  const handleCategoryAdded = (newCategory) => {
-    setCategories(prev => [...prev, newCategory]);
-    
-    // Initialize dish count for new category
-    setCategoryDishCounts(prev => ({
-      ...prev,
-      [newCategory.id]: 0
-    }));
+  const handleCategoryAdded = () => {
+    fetchCategories();
   };
 
   // Handle category update
-  const handleCategoryUpdated = (updatedCategory) => {
-    setCategories(prevCategories => 
-      prevCategories.map(cat => 
-        cat && cat.id === updatedCategory.id ? updatedCategory : cat));
-    
-    // Optionally refresh dish counts if needed
-    fetchCategoryDishCounts(categories);
+  const handleCategoryUpdated = () => {
+    fetchCategories();
   };
 
   // Loading state

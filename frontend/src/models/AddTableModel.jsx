@@ -74,7 +74,7 @@ const AddTableModal = ({ isOpen, onClose, onTableAdded }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Location</label>
+            <label className="block text-sm font-medium text-gray-700">Type</label>
             <input
               type="text"
               name="location"

@@ -124,9 +124,9 @@ const MyBookings = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#FFFFE0] font-['Playfair_Display'] mt-16 p-4">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#FFFFE0] mt-16 p-4">
       {/* Left: User Details */}
-      <div className="md:w-1/4 h-96 bg-white shadow-md rounded-lg p-6 flex flex-col items-center font-['Playfair_Display'] mb-6 md:mb-0 m-2">
+      <div className="md:w-1/4 h-96 bg-white shadow-md rounded-lg p-6 flex flex-col items-center mb-6 md:mb-0 m-2">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">User Profile</h1>
         <div className="w-16 h-16 bg-gold text-white rounded-full flex items-center justify-center text-2xl font-bold">
           {user ? user.name[0].toUpperCase() : "A"}

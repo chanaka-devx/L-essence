@@ -26,7 +26,7 @@ exports.getAvailableTables = async (req, res) => {
       FROM tables
       WHERE table_id NOT IN (
         SELECT table_id FROM Bookings
-        WHERE booking_date = ? AND timeslot_id = ?
+        WHERE booking_date = ? AND timeslot_id = ? AND (status = 'pending' OR status = 'confirmed')
       )
       ORDER BY table_id ASC
     `;
@@ -77,7 +77,7 @@ exports.createTable = async (req, res) => {
     const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence/tables' });
     fs.unlinkSync(req.file.path);
 
-    const [insert] = await pool.execute(
+    const [insert] = await db.query(
       'INSERT INTO tables (location, seats, table_image) VALUES (?, ?, ?)',
       [location, seats, result.secure_url]
     );
@@ -105,7 +105,7 @@ exports.updateTable = async (req, res) => {
     const id = req.params.id;
 
     // Check if table exists first
-    const [existingTable] = await pool.execute('SELECT * FROM tables WHERE table_id = ?', [id]);
+    const [existingTable] = await db.query('SELECT * FROM tables WHERE table_id = ?', [id]);
     if (existingTable.length === 0) {
       return res.status(404).json({ success: false, message: 'Table not found' });
     }
@@ -119,7 +119,7 @@ exports.updateTable = async (req, res) => {
 
     }
 
-    const [update] = await pool.execute(
+    const [update] = await db.query(
       'UPDATE tables SET location = ?, seats = ?, table_image = COALESCE(?, table_image) WHERE table_id = ?',
       [location, seats, imageUrl, id]
     );
@@ -128,7 +128,7 @@ exports.updateTable = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Table not found' });
 
     // Get updated table data
-    const [updatedTable] = await pool.execute('SELECT * FROM tables WHERE table_id = ?', [id]);
+    const [updatedTable] = await db.query('SELECT * FROM tables WHERE table_id = ?', [id]);
 
     res.status(200).json({ 
       success: true, 
@@ -147,12 +147,12 @@ exports.deleteTable = async (req, res) => {
     const id = req.params.id;
 
     // Get table data before deletion to potentially delete image from Cloudinary
-    const [existingTable] = await pool.execute('SELECT * FROM tables WHERE table_id = ?', [id]);
+    const [existingTable] = await db.query('SELECT * FROM tables WHERE table_id = ?', [id]);
     if (existingTable.length === 0) {
       return res.status(404).json({ success: false, message: 'Table not found' });
     }
 
-    const [del] = await pool.execute('DELETE FROM tables WHERE table_id = ?', [id]);
+    const [del] = await db.query('DELETE FROM tables WHERE table_id = ?', [id]);
 
     if (del.affectedRows === 0)
       return res.status(404).json({ success: false, message: 'Table not found' });

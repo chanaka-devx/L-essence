@@ -11,11 +11,10 @@ const ChefSpecials = () => {
       setLoading(true);
       setError(null);
 
-      // Step 1: Get all categories
+      //Get all categories
       const categoriesRes = await axios.get("http://localhost:5176/api/categories");
       const categories = categoriesRes.data.data;
 
-      // Step 2: Find the category named "Chef's Specials"
       const chefSpecialCategory = categories.find(
         (cat) => cat.name.toLowerCase() === "chef's specials"
       );
@@ -25,17 +24,17 @@ const ChefSpecials = () => {
         return;
       }
 
-      // Step 3: Fetch dishes for that category ID
+      //Fetch dishes for that category ID
       const dishesRes = await axios.get(
         `http://localhost:5176/api/categories/${chefSpecialCategory.id}/dishes`
       );
       const dishes = dishesRes.data.data.dishes || [];
 
-      // Step 4: Sort dishes (optional)
-      const sortedDishes = dishes.sort((a, b) => a.id - b.id);
+      //Sort dishes last 3
+      const sortedDishes = dishes.sort((a, b) => b.id - a.id);
+      const latestThreeDishes = sortedDishes.slice(0, 3);
 
-      // Step 5: Set to state
-      setSpecials(sortedDishes);
+      setSpecials(latestThreeDishes);
     } catch (err) {
       console.error("Error fetching Chef Specials:", err);
       setError("Failed to load Chef's Specials. Please try again later.");
@@ -56,8 +55,8 @@ const ChefSpecials = () => {
 
       {/* Loading */}
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-6xl mx-auto">
-          {[1, 2, 3, 4].map((n) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+          {[1, 2, 3].map((n) => (
             <div
               key={n}
               className="animate-pulse bg-[#2C3E50] rounded-lg border border-[#F4C430] h-64"
@@ -80,7 +79,7 @@ const ChefSpecials = () => {
 
       {/* Specials Grid */}
       {!loading && specials.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
           {specials.map((item) => (
             <div
               key={item.id}

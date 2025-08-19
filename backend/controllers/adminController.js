@@ -24,15 +24,16 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert new user with role defaulting to 'admin'
-    await db.query(
+    const [result] = await db.query(
       "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'admin')",
       [name || null, email, phone || null, hashedPassword]
     );
 
-    // Generate JWT token with email and role
-    const token = jwt.sign({ email, role: "admin" }, JWT_SECRET, { expiresIn: "1d" });
+    const userId = result.insertId;
 
-    res.status(201).json({ message: "Signup successful", token });
+    const token = jwt.sign({ user_id: userId, email, role: "admin" }, JWT_SECRET, { expiresIn: "1d" });
+
+    res.status(201).json({ message: "Signup successful", token, role: "admin", user_id: userId });
   } catch (err) {
     console.error("Signup Error:", err);
     res.status(500).json({ error: "Internal Server Error" });

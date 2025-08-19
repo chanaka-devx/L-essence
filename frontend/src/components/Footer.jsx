@@ -74,13 +74,17 @@ const Footer = () => {
         <p>2025 L’ESSENCE. All rights reserved</p>
         <div className="flex gap-4">
           <a
-            href="#"
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="border border-[#F4C430] p-2 rounded-full text-[#F4C430] hover:bg-[#F4C430] hover:text-[#2C3E50] transition"
           >
             <FaInstagram />
           </a>
           <a
-            href="#"
+            href="https://www.facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="border border-[#F4C430] p-2 rounded-full text-[#F4C430] hover:bg-[#F4C430] hover:text-[#2C3E50] transition"
           >
             <FaFacebookF />

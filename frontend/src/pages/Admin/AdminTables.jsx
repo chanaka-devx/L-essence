@@ -67,7 +67,7 @@ const AdminTables = () => {
   };
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 pb-6 font-['Playfair_Display']">
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">
           All Tables ({tables.length} tables)
@@ -126,7 +126,7 @@ const AdminTables = () => {
 
               <div className="p-4">
                 <h3 className="text-[#333333] text-lg font-medium">
-                  Location: {table.location}
+                  {table.location}
                 </h3>
                 <p className="text-[#333333] mt-1">Seats: {table.seats}</p>
               </div>

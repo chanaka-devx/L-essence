@@ -1,9 +1,7 @@
-// Get all categories
 const pool = require('../config/db');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const dotenv = require('dotenv');
-const Category = require('../models/Category');
 
 dotenv.config();
 
@@ -96,12 +94,34 @@ exports.getDishCountByCategory = async (req, res) => {
 // CREATE Category
 exports.createCategory = async (req, res) => {
   try {
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    
     const { name, description } = req.body;
 
-    if (!req.file) return res.status(400).json({ success: false, message: 'Image is required.' });
+    // Validate required fields
+    if (!name || !description) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Name and description are required.' 
+      });
+    }
 
-    const result = await cloudinary.uploader.upload(req.file.path, { folder: 'L-essence' });
-    fs.unlinkSync(req.file.path); // remove temp file
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Image is required.' 
+      });
+    }
+
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, { 
+      folder: 'L-essence/categories' 
+    });
+    
+    // Remove temporary file
+    fs.unlinkSync(req.file.path);
 
     const [insert] = await pool.execute(
       'INSERT INTO categories (name, description, image) VALUES (?, ?, ?)',
@@ -110,11 +130,20 @@ exports.createCategory = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Category created',
-      data: { id: insert.insertId, name, description, image: result.secure_url },
+      message: 'Category created successfully',
+      data: { 
+        id: insert.insertId, 
+        name, 
+        description, 
+        image: result.secure_url 
+      },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('Error creating category:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to create category' 
+    });
   }
 };
 

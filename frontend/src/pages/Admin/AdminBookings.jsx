@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
-  const [dateFilter, setDateFilter] = useState("today");
+  const [dateFilter, setDateFilter] = useState("upcoming");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
   const [updatingBooking, setUpdatingBooking] = useState(null);
@@ -16,7 +16,7 @@ const AdminBookings = () => {
       const res = await axios.get("http://localhost:5176/api/bookings/all");
       let data = res.data.bookings || [];
 
-      // Apply filters client-side (optional — could also send params to backend)
+      // Apply filters client-side
       data = data.filter((booking) => {
         const bookingDate = dayjs(booking.booking_date).startOf("day");
         const today = dayjs().startOf("day");
@@ -218,6 +218,9 @@ const AdminBookings = () => {
                     Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-[#333333] uppercase tracking-wider">
+                    Time Slot
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#333333] uppercase tracking-wider">
                     Customer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-[#333333] uppercase tracking-wider">
@@ -246,6 +249,9 @@ const AdminBookings = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-[#333333]">
                         {dayjs(b.booking_date).format("YYYY-MM-DD")}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#333333]">
+                        {b.start_time} - {b.end_time}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-[#333333]">
                         {b.customer_name}
@@ -277,7 +283,7 @@ const AdminBookings = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center">
+                    <td colSpan="9" className="px-6 py-12 text-center">
                       <div className="text-[#666666]">
                         <p className="text-lg mb-2">No bookings found</p>
                         <p className="text-sm">Try adjusting your filters to see more results.</p>

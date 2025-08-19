@@ -60,7 +60,7 @@ const Dishes = () => {
     );
 
   return (
-    <div className="min-h-screen bg-[#FFFFE0] font-['Playfair_Display'] mt-20 pt-2">
+    <div className="min-h-screen bg-[#FFFFE0] font-['Playfair_Display'] mt-16 pt-2 pb-4 ">
       {/* Header */}
       <div className="relative max-w-7xl mx-auto px-4 py-6 flex items-center justify-center">
         <button

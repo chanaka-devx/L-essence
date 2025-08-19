@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../context/useAuth";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Signup = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +28,7 @@ const Signup = () => {
   };
 
   const validatePhone = (phone) => {
-    const re = /^\d{7,15}$/; // numbers only, 7-15 digits
+    const re = /^\d{10}$/;
     return re.test(phone);
   };
 
@@ -85,6 +87,9 @@ const Signup = () => {
         role: data.role,
         id: data.user_id
       }));
+
+      // Update auth context state
+      login(formData.email, data.role);
 
       setSuccessMessage("Signup successful! Redirecting...");
       setTimeout(() => navigate("/tables"), 2000);

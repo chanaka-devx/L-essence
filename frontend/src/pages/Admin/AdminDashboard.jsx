@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUsers, FaUtensils, FaTags, FaChair } from "react-icons/fa";
-const BASE_URL = import.meta.env?.API_BASE_URL
 import Profile from "../../assets/images/profile.jpg";
 import AdminDetailsModal from "./AdminDetailsModal";
 
@@ -20,7 +19,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/admin/stats`, {
+      const res = await axios.get('http://localhost:5176/api/admin/stats', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCounts(res.data);
@@ -77,7 +76,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="bg-[#FDF6E3] min-h-screen px-6 py-10 font-['Playfair_Display']">
+    <div className="bg-[#FDF6E3] min-h-screen px-6 py-10 pb-6 font-['Playfair_Display']">
       <div className="max-w-7xl mx-auto pt-12">
         {/* Header with title + profile */}
         <div className="flex justify-between items-center mb-8">
