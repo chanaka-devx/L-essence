@@ -5,7 +5,7 @@ import { Link, NavLink } from "react-router-dom";
 const AdminNavbar = () => {
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full">
+    <nav className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-2 py-5 flex items-center justify-between">
         {/* Logo */}
         <div className="text-[#F59E0B] font-bold text-lg tracking-wide">

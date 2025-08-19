@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import bannerImage from '../../assets/images/hero/banner1.jpg';
 
@@ -6,14 +6,17 @@ const HeroSection = () => {
   const location = useLocation();
 
   useEffect(() => {
-
     if (location.state?.scrollTo === "categories") {
-      const section = document.getElementById("categories");
-      if (section) {
-        setTimeout(() => {
+      const tryScroll = () => {
+        const section = document.getElementById("categories");
+        if (section) {
           section.scrollIntoView({ behavior: "smooth" });
-        }, 200); // delay to ensure DOM is ready
-      }
+        } else {
+          // Retry in case #categories not yet rendered
+          setTimeout(tryScroll, 100);
+        }
+      };
+      tryScroll();
     }
   }, [location]);
 
@@ -33,12 +36,12 @@ const HeroSection = () => {
         </h1>
         <p className="mt-4 text-2xl font-playfair">Experience Culinary Artistry</p>
 
-        <button 
+        <button
           className="mt-8 px-6 py-3 bg-gold text-black rounded hover:opacity-90 font-playfair font-semibold transition"
           onClick={() => {
-            const categoriesSection = document.getElementById('categories');
+            const categoriesSection = document.getElementById("categories");
             if (categoriesSection) {
-              categoriesSection.scrollIntoView({ behavior: 'smooth' });
+              categoriesSection.scrollIntoView({ behavior: "smooth" });
             }
           }}
         >

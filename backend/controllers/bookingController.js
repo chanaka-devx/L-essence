@@ -47,7 +47,10 @@ exports.getAllBookings = async (req, res) => {
         u.email AS customer_email,
         u.phone AS customer_phone,
         t.location AS table_location,
-        t.seats AS table_seats
+        t.seats AS table_seats,
+        ts.timeslot_id,
+        ts.start_time,
+        ts.end_time
       FROM Bookings b
       JOIN users u ON b.user_id = u.user_id
       JOIN tables t ON b.table_id = t.table_id
@@ -55,7 +58,14 @@ exports.getAllBookings = async (req, res) => {
       ORDER BY b.booking_date DESC
     `);
 
-    res.json({ success: true, bookings });
+    // format the time to AM/PM format
+    const formattedBookings = bookings.map(b => ({
+      ...b,
+      start_time: b.start_time ? new Date(`1970-01-01T${b.start_time}Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }) : null,
+      end_time: b.end_time ? new Date(`1970-01-01T${b.end_time}Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }) : null,
+    }));
+
+    res.json({ success: true, bookings: formattedBookings });
   } catch (err) {
     console.error("Error fetching bookings:", err);
     res.status(500).json({ success: false, error: "Server error" });

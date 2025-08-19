@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../config/apiConfig";
 
 const UpdateCategoryModal = ({
   isOpen,
@@ -65,7 +66,7 @@ const UpdateCategoryModal = ({
       }
 
       const response = await fetch(
-        `http://localhost:5176/api/categories/${category.id}`,
+        `${BASE_URL}/api/categories/${category.id}`,
         {
           method: "PUT",
           body: formDataToSend,

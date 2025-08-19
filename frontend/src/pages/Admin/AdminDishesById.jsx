@@ -4,6 +4,7 @@ import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddDishModal from "../../models/AddDishModel";
 import UpdateDishModal from "../../models/UpdateDishModel";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminDishesById = () => {
   const { categoryId } = useParams();
@@ -21,7 +22,7 @@ const AdminDishesById = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5176/api/categories/${categoryId}/dishes`
+          `${BASE_URL}/api/categories/${categoryId}/dishes`
         );
 
         if (!response.ok) {
@@ -53,7 +54,7 @@ const AdminDishesById = () => {
     if (window.confirm("Are you sure you want to delete this dish?")) {
       try {
         const response = await fetch(
-          `http://localhost:5176/api/dishes/${dishId}`,
+          `${BASE_URL}/api/dishes/${dishId}`,
           {
             method: "DELETE",
           }
@@ -125,7 +126,7 @@ const AdminDishesById = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6E3] mt-10 pt-10 p-8 font-['Playfair_Display']">
+    <div className="min-h-screen bg-[#FDF6E3] mt-10 pt-10 pb-6 font-['Playfair_Display']">
       <div className=" mx-auto">
         {/* Header with Category Info */}
         <div className="max-w-7xl pt-2 mx-auto">

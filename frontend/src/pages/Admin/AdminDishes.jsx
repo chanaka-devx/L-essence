@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AddDishModal from "../../models/AddDishModel";
 import UpdateDishModal from "../../models/UpdateDishModel";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminDishes = () => {
   const [dishes, setDishes] = useState([]);
@@ -11,33 +12,32 @@ const AdminDishes = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState(null);
 
-  useEffect(() => {
-    const fetchAllDishes = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("http://localhost:5176/api/dishes");
+  
+  const fetchAllDishes = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${BASE_URL}/api/dishes`);
 
-        console.log("Selected Dish:", selectedDish);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-          setDishes(result.data);
-        } else {
-          throw new Error(result.message || "Failed to fetch dishes");
-        }
-      } catch (err) {
-        console.error("Error fetching dishes:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
 
+      const result = await response.json();
+
+      if (result.success) {
+        setDishes(result.data);
+      } else {
+        throw new Error(result.message || "Failed to fetch dishes");
+      }
+    } catch (err) {
+      console.error("Error fetching dishes:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAllDishes();
   }, []);
 
@@ -46,14 +46,14 @@ const AdminDishes = () => {
     if (window.confirm("Are you sure you want to delete this dish?")) {
       try {
         const response = await fetch(
-          `http://localhost:5176/api/dishes/${dishId}`,
+          `${BASE_URL}/api/dishes/${dishId}`,
           {
             method: "DELETE",
           }
         );
 
         if (response.ok) {
-          setDishes(dishes.filter((dish) => dish.id !== dishId));
+          fetchAllDishes();
         } else {
           throw new Error("Failed to delete dish");
         }
@@ -74,17 +74,16 @@ const AdminDishes = () => {
   };
 
   // Handle dish added
-  const handleDishAdded = (newDish) => {
-    setDishes((prev) => [...prev, newDish]);
+  const handleDishAdded = () => {
+    setIsAddModalOpen(false);
+    fetchAllDishes();
   };
 
   // Handle dish updated
-  const handleDishUpdated = (updatedDish) => {
-    setDishes((prevDishes) =>
-      prevDishes.map((dish) =>
-        dish.id === updatedDish.id ? updatedDish : dish
-      )
-    );
+  const handleDishUpdated = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedDish(null);
+    fetchAllDishes(); 
   };
 
   // Loading state
@@ -118,7 +117,7 @@ const AdminDishes = () => {
   }
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 pb-6 px-6 font-['Playfair_Display']">
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">
           All Dishes ({dishes.length} dishes)

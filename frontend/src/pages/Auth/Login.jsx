@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../../context/useAuth";
+import { BASE_URL } from "../../config/apiConfig";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5176/api/admins/login", {
+      const response = await fetch(`${BASE_URL}/api/admins/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

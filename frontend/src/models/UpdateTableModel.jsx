@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BASE_URL } from '../config/apiConfig';
 
 const UpdateTableModal = ({ isOpen, onClose, table, onTableUpdated }) => {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ const UpdateTableModal = ({ isOpen, onClose, table, onTableUpdated }) => {
         formDataToSend.append('table_image', formData.image);
       }
 
-      const response = await fetch(`http://localhost:5176/api/tables/${table.table_id}`, {
+      const response = await fetch(`${BASE_URL}/api/tables/${table.table_id}`, {
         method: 'PUT',
         body: formDataToSend,
       });

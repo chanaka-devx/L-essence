@@ -2,9 +2,11 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="pt-24 pb-16 bg-black text-white">
+    <div className=" pt-28 pb-16 bg-black text-white">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-4xl md:text-5xl font-playfair text-gold mb-8 text-center">About L'ESSENCE</h1>
+        <div className="mb-10 text-left">
+          <h1 className="text-4xl font-playfair text-white">About <span className="text-4xl font-playfair text-gold">L'ESSENCE</span></h1>
+        </div>
         
         <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
           <div>

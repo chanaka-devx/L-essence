@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Profile from "../../assets/images/profile.jpg";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminDetailsModal = ({ isOpen, onClose, admin, setAdmin }) => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AdminDetailsModal = ({ isOpen, onClose, admin, setAdmin }) => {
     if (isOpen) {
       const fetchUserProfile = async () => {
         try {
-          const res = await axios.get("http://localhost:5176/api/users/me", {
+          const res = await axios.get(`${BASE_URL}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setAdmin(res.data);

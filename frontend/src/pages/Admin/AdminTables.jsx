@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
 import AddTableModal from "../../models/AddTableModel";
 import UpdateTableModal from "../../models/UpdateTableModel";
+import { BASE_URL } from "../../config/apiConfig";
 
 const AdminTables = () => {
   const [tables, setTables] = useState([]);
@@ -17,7 +18,7 @@ const AdminTables = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5176/api/tables");
+      const res = await fetch(`${BASE_URL}/api/tables`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch tables");
       setTables(data.data);
@@ -36,7 +37,7 @@ const AdminTables = () => {
     if (!window.confirm("Are you sure you want to delete this table?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5176/api/tables/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/tables/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -67,7 +68,7 @@ const AdminTables = () => {
   };
 
   return (
-    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 font-['Playfair_Display']">
+    <div className="bg-[#FFFFE0] min-h-screen mt-10 pt-12 px-6 pb-6 font-['Playfair_Display']">
       <div className="pr-4 flex justify-between items-center mb-6">
         <h2 className="pl-4 text-2xl font-semibold text-[#333333]">
           All Tables ({tables.length} tables)
@@ -126,7 +127,7 @@ const AdminTables = () => {
 
               <div className="p-4">
                 <h3 className="text-[#333333] text-lg font-medium">
-                  Location: {table.location}
+                  {table.location}
                 </h3>
                 <p className="text-[#333333] mt-1">Seats: {table.seats}</p>
               </div>

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import { BASE_URL } from "../../config/apiConfig";
 import {
   Calendar,
   Clock,
   Users,
   Search,
-  MapPin,
+  Table,
   Loader2,
   AlertCircle,
   CheckCircle2,
@@ -20,13 +24,30 @@ const AvailableTables = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedTable, setSelectedTable] = useState(null);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(null);
+  const [searchAttempted, setSearchAttempted] = useState(false);
 
-  // Get today's date in YYYY-MM-DD format
+  const navigate = useNavigate();
+  
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/userlogin");
+    }
+  }, [navigate]);
+
+  // decode token
+  const token = localStorage.getItem("token");
+  const userId = token ? jwtDecode(token)?.user_id : null;
+
+  // YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
 
-  // Fetch time slots on component mount
+  // Fetch time slots
   useEffect(() => {
-    fetch("http://localhost:5176/api/timeslots")
+    fetch(`${BASE_URL}/api/timeslots`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -42,6 +63,7 @@ const AvailableTables = () => {
     setError("");
     setAvailableTables([]);
     setSelectedTable(null);
+    setSearchAttempted(true);
 
     if (!date || !selectedTimeSlot) {
       setError("Please select date and time slot");
@@ -52,7 +74,7 @@ const AvailableTables = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5176/api/tables/available?date=${date}&timeslot_id=${selectedTimeSlot}`
+        `${BASE_URL}/api/tables/available?date=${date}&timeslot_id=${selectedTimeSlot}`
       );
       const data = await response.json();
 
@@ -88,8 +110,53 @@ const AvailableTables = () => {
     (slot) => slot.timeslot_id.toString() === selectedTimeSlot
   );
 
+  //Reserve Table
+  const handleReserveTable = async () => {
+    if (!token) {
+      navigate("/userlogin");
+      return;
+    }
+
+    if (!selectedTable || !selectedTimeSlot || !date) {
+      setError("Please select a table, time slot, and date.");
+      return;
+    }
+
+    try {
+      setBookingLoading(true);
+      setError(null);
+      setBookingSuccess(null);
+
+      await axios.post(
+        `${BASE_URL}/api/bookings/book`,
+        {
+          table_id: selectedTable.table_id,
+          timeslot_id: Number(selectedTimeSlot),
+          user_id: userId,
+          booking_date: date,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+
+      setBookingSuccess(
+        `✅ Table ${selectedTable.location} successfully reserved!`
+      );
+      setSelectedTable(null);
+      setAvailableTables([]);
+    } catch (err) {
+      console.error("Error creating booking:", err);
+      if (err.response?.status === 401) navigate("/userlogin");
+      else setError(err.response?.data?.error || "Failed to reserve table.");
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#FFFFE0] p-6 mt-20">
+    <div className="min-h-screen bg-[#FFFFE0] p-6 mt-16">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center p-4">
@@ -147,27 +214,27 @@ const AvailableTables = () => {
                   ))}
                 </select>
               </div>
-              
-            </div>{/* Search Button */}
-              <div className="flex justify-center pt-4">
-                <button
-                  onClick={handleSearch}
-                  className="bg-[#F59E0B] text-white py-4 px-5 rounded-md font-semibold text-lg hover:bg-[#e18f06] transition flex items-center space-x-2"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Searching...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Search className="w-5 h-5" />
-                      <span>Find Available Tables</span>
-                    </>
-                  )}
-                </button>
-              </div>
+            </div>
+            {/* Search Button */}
+            <div className="flex justify-center pt-4">
+              <button
+                onClick={handleSearch}
+                className="bg-[#F59E0B] text-white py-4 px-5 rounded-md font-semibold text-lg hover:bg-[#e18f06] transition flex items-center space-x-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Searching...</span>
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-5 h-5" />
+                    <span>Find Available Tables</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -231,6 +298,17 @@ const AvailableTables = () => {
                     )
                   }
                 >
+                  {/* Table Image */}
+                  {table.table_image && (
+                    <div className="mb-4">
+                      <img
+                        src={table.table_image}
+                        alt={`Table ${table.location}`}
+                        className="w-full h-40 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+
                   {/* Table Header */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
@@ -271,16 +349,6 @@ const AvailableTables = () => {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600 text-sm flex items-center">
-                        <MapPin className="w-4 h-4 mr-2" />
-                        Location
-                      </span>
-                      <span className="font-semibold text-gray-800">
-                        Section {table.location}
-                      </span>
-                    </div>
-
                     {/* Availability Badge */}
                     <div className="pt-2">
                       <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -305,10 +373,20 @@ const AvailableTables = () => {
             {/* Action Button */}
             {selectedTable && (
               <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
-                <button className="bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-8 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Reserve Table {selectedTable.location}</span>
+                <button
+                  onClick={handleReserveTable}
+                  disabled={bookingLoading}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-8 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2"
+                >
+                  {bookingLoading ? "Reserving..." : `Reserve Table ${selectedTable.location}`}
                 </button>
+
+                {bookingSuccess && (
+                  <p className="mt-2 text-green-600 text-sm">
+                    {bookingSuccess}
+                  </p>
+                )}
+                {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
               </div>
             )}
           </div>
@@ -316,6 +394,7 @@ const AvailableTables = () => {
 
         {/* No Results State */}
         {!loading &&
+          searchAttempted &&
           availableTables.length === 0 &&
           !error &&
           date &&

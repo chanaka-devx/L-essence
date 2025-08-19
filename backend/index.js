@@ -16,7 +16,12 @@ const tableRoutes = require('./routes/tableRoutes');
 const adminStatRoutes = require('./routes/adminStatRoutes')
 
 const app = express();
-app.use(cors());
+app.use(cors(
+    {
+        origin: "*",
+        credentials: false,
+    }
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
