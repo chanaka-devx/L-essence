@@ -90,7 +90,13 @@ exports.getDishCountByCategory = async (req, res) => {
 exports.createCategory = async (req, res) => {
   try {
     console.log('Request body:', req.body);
-    console.log('Request file:', req.file);
+    console.log('Request file:', req.file ? {
+      fieldname: req.file.fieldname,
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      buffer: req.file.buffer ? 'Buffer present' : 'Buffer missing'
+    } : 'No file');
     
     const { name, description } = req.body;
 
@@ -111,7 +117,26 @@ exports.createCategory = async (req, res) => {
     }
 
     // Upload image to Cloudinary directly from buffer
-    const result = await uploadToCloudinary(req.file.buffer, 'L-essence/categories');
+    let result;
+    try {
+      if (!req.file.buffer) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid file upload. File buffer is missing.'
+        });
+      }
+      result = await uploadToCloudinary(req.file.buffer, 'L-essence/categories');
+      if (!result || !result.secure_url) {
+        throw new Error('Failed to get secure URL from Cloudinary');
+      }
+    } catch (uploadError) {
+      console.error('Cloudinary upload error:', uploadError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to upload image to cloud storage',
+        error: uploadError.message
+      });
+    }
     
 
     const [insert] = await pool.execute(
@@ -160,8 +185,26 @@ exports.updateCategory = async (req, res) => {
 
     let imageUrl = null;
     if (req.file) {
-      const result = await uploadToCloudinary(req.file.buffer, 'L-essence');
-      imageUrl = result.secure_url;
+      try {
+        if (!req.file.buffer) {
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid file upload. File buffer is missing.'
+          });
+        }
+        const result = await uploadToCloudinary(req.file.buffer, 'L-essence');
+        if (!result || !result.secure_url) {
+          throw new Error('Failed to get secure URL from Cloudinary');
+        }
+        imageUrl = result.secure_url;
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to upload image to cloud storage',
+          error: uploadError.message
+        });
+      }
     }
 
     const [update] = await pool.execute(
