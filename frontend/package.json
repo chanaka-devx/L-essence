@@ -26,9 +26,10 @@
     "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.35",
-    "rollup": "^4.46.3",
     "tailwindcss": "^3.4.1",
-    "terser": "^5.43.1",
-    "vite": "^5.2.8"
+    "vite": "^5.0.12"
+  },
+  "engines": {
+    "node": "18.20.3"
   }
 }
