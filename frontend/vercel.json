@@ -3,6 +3,7 @@
   "buildCommand": "npm install --no-optional && npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install --no-optional",
+  "nodeVersion": "16.x",
   "rewrites": [
     {
       "source": "/(.*)",
