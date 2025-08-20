@@ -4,9 +4,6 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// CLOUDINARY CONFIG
-// No longer needed as it's configured in utils/upload.js
-
 exports.getAvailableTables = async (req, res) => {
   const { date, timeslot_id } = req.query;
 

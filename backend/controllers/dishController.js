@@ -4,9 +4,6 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// CLOUDINARY CONFIG
-// No longer needed as it's configured in utils/upload.js
-
 // GET all dishes
 exports.getAllDishes = async (req, res) => {
   try {

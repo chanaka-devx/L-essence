@@ -23,9 +23,6 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// CLOUDINARY CONFIG
-// No longer needed as it's configured in utils/upload.js
-
 // GET all dishes of a specific category
 exports.getDishesByCategory = async (req, res) => {
   const categoryId = req.params.id;
