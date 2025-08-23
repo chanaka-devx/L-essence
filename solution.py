@@ -65,14 +65,12 @@ def findShortestPath(grid):
     return -1
 
 
-# Main execution for problem input
-if __name__ == "__main__":
-    # Read input
-    R, C = map(int, input().split())
-    grid = []
-    for _ in range(R):
-        grid.append(list(input().strip()))
-    
-    # Find and print the shortest path
-    result = findShortestPath(grid)
-    print(result)
+# Read input from user
+R, C = map(int, input().split())
+grid = []
+for _ in range(R):
+    grid.append(list(input().strip()))
+
+# Find and print the shortest path
+result = findShortestPath(grid)
+print(result)
